@@ -1,12 +1,32 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view/>
+  <component :is="layout">
+    <router-view/>
+  </component>
 </template>
 
+<script>
+import EmptyLayout from '@/layouts/EmptyLayout';
+import MainLayout from '@/layouts/MainLayout';
+
+export default {
+  components: {
+    EmptyLayout,
+    MainLayout,
+  },
+  computed: {
+    layout() {
+      return (this.$route.meta.layout || 'empty') + '-layout';
+    }
+  },
+}
+</script>
+
 <style lang="scss">
+* {
+  margin: 0;
+  padding: 0;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
