@@ -1,10 +1,9 @@
 <template>
-  <div class="main-layout">
+  <div class="home-layout">
     <Navbar />
 
     <main class="app-content">
       <div class="app-page">
-        <Sidebar />
         <router-view />
       </div>
     </main>
@@ -12,12 +11,9 @@
 </template>
 
 <script>
-import Sidebar from '@/components/app/Sidebar.vue';
 import Navbar from '@/components/app/Navbar.vue';
-
 export default {
   components: {
-    Sidebar,
     Navbar,
   }
 }
@@ -28,10 +24,5 @@ export default {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-}
-
-.app-page {
-  display: grid;
-  grid-template-columns: 1fr 5fr;
 }
 </style>
