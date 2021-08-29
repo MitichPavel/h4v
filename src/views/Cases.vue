@@ -28,7 +28,7 @@
       </ul>
     </div>
 
-    <div class="case">
+    <div class="content">
       <ul class="case-list">
         <li class="case-item">
           <div class="wrap-img">
@@ -111,6 +111,12 @@ export default {
   margin: 0;
 }
 
+@media only screen and (max-width:1280px) {
+  .cases {
+    padding: 0 5px 0 0;
+  }
+}
+
 .wrap-page-title {
   position: relative;
   box-sizing: border-box;
@@ -148,7 +154,7 @@ export default {
   list-style-type: none;
 }
 
-.case-item {
+.cases .content .case-list .case-item {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-gap: 10px;
@@ -156,6 +162,13 @@ export default {
   box-sizing: border-box;
   padding: 5px;
   border-top: 2px solid #DFE2E6;
+  font-size: 18px;
+}
+
+@media only screen and (max-width:1280px) {
+  .cases .content .case-list .case-item {
+    font-size: 15px;
+  }
 }
 
 .case-item:nth-child(2n) {
