@@ -1,42 +1,60 @@
 <template>
-  <div class="main-layout">
-    <nav class="navbar">
-      <div class="wrap-navbar">
-        <ul class="menu">
-          <li class="menu-item active">
-            <a href="/" class="menu-link">
-              Help4vet
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="/cases" class="menu-link">
-              zdjęcia RTG
-            </a>
-          </li>
-        </ul>
-        <div class="user-menu">
-          <img src="./../assets/images/user.svg" class="user-icon" alt="user icon">
-          <div class="user-menu-item">Login</div>
-        </div>
-      </div>
-    </nav>
+  <nav class="navbar">
+    <div class="wrap-navbar">
+      <ul class="menu">
 
-    <main class="app-content">
-      <div class="app-page">
-        <router-view />
+        <router-link
+          v-for="link in links"
+          :to="link.url"
+          :key="link.url"
+          custom
+          v-slot="{ href, isActive }"
+          >
+          <li
+            class="menu-item"
+            :class="{ active : isActive }"
+          >
+            <a :href="href" class="menu-link">
+              {{link.title}}
+            </a>
+          </li>
+        </router-link>
+      </ul>
+      <div class="user-menu">
+        <router-link
+          to="/login"
+          custom
+          v-slot="{ href, isActive }"
+          >
+          <div
+            class="item"
+            :class="{ active : isActive }"
+          >
+            <a :href="href" class="link">
+              <img src="@/assets/images/user.svg" class="user-icon" alt="user icon">
+              <div class="login">Login</div>
+            </a>
+          </div>
+        </router-link>
       </div>
-    </main>
-  </div>
+    </div>
+  </nav>
 </template>
 
 <script>
 export default {
-
-}
+  data() {
+    return {
+      links: [
+        {title: 'Help4vet', url: '/', exact: true,},
+        {title: 'zdjęcia RTG', url: '/cases',},
+      ],
+    };
+  },
+};
 </script>
 
-<style scoped>
-/* Navbar */
+<style>
 .navbar {
   background-color: #1E2832;
 }
@@ -56,7 +74,6 @@ export default {
   color: #fff;
 }
 
-/* Menu */
 .menu {
   display: flex;
   flex-direction: row;
@@ -72,13 +89,16 @@ export default {
 .menu .menu-item {
   position: relative;
   box-sizing: border-box;
+  width: 16vw;
+  min-width: 170px;
+  max-width: 300px;
   height: 100%;
 }
 
 .menu .menu-item .menu-link {
   display: block;
   box-sizing: border-box;
-  width: 250px;
+  width: 100%;
   padding: 0 0 16px 0;
   color: #fff;
   text-decoration: none;
@@ -110,23 +130,25 @@ export default {
   cursor: pointer;
 }
 
-.user-menu-item {
+.user-menu .item {
   display: block;
   box-sizing: border-box;
+  width: 70px;
   padding: 0;
   margin: 0;
 }
 
-.user-icon {
+.user-menu .item .link {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: #fff;
+  text-decoration: none;
+}
+
+.user-menu .item .link .user-icon {
   box-sizing: border-box;
   width: 21px;
   height: 21px;
-}
-
-.app-content {
-  box-sizing: border-box;
-  max-width: 1980px;
-  padding: 0;
-  margin: 0 auto;
 }
 </style>
