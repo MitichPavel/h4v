@@ -1,21 +1,25 @@
 <template>
   <div class="main-layout">
-    <div class="wrap-navbar">
-      <nav class="navbar">
+    <nav class="navbar">
+      <div class="wrap-navbar">
         <ul class="menu">
           <li class="menu-item active">
-            Help4vet
+            <a href="/" class="menu-link">
+              Help4vet
+            </a>
           </li>
           <li class="menu-item">
-            zdjęcia RTG
+            <a href="/cases" class="menu-link">
+              zdjęcia RTG
+            </a>
           </li>
         </ul>
         <div class="user-menu">
           <img src="./../assets/images/user.svg" class="user-icon" alt="user icon">
           <div class="user-menu-item">Login</div>
         </div>
-      </nav>
-    </div>
+      </div>
+    </nav>
 
     <main class="app-content">
       <div class="app-page">
@@ -31,24 +35,28 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-// Navbar
+<style scoped>
+/* Navbar */
 .navbar {
+  background-color: #1E2832;
+}
+
+.wrap-navbar {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: flex-start;
   box-sizing: border-box;
-  padding: 17px 0 0 0;
-  margin: 0;
-  min-height: auto;
   width: 100%;
-  background-color: #1E2832;
+  max-width: 1980px;
+  min-height: auto;
+  padding: 17px 0 0 0;
+  margin: 0 auto;
   color: #fff;
 }
 
-// Menu
+/* Menu */
 .menu {
   display: flex;
   flex-direction: row;
@@ -64,23 +72,33 @@ export default {
 .menu .menu-item {
   position: relative;
   box-sizing: border-box;
-  width: 250px;
-  padding: 0 0 16px 0;
-  background-color: #1E2832;
-  cursor: pointer;
+  height: 100%;
 }
 
-.menu .menu-item.active::after {
+.menu .menu-item .menu-link {
+  display: block;
+  box-sizing: border-box;
+  width: 250px;
+  padding: 0 0 16px 0;
+  color: #fff;
+  text-decoration: none;
+}
+
+.menu .menu-item.active .menu-link {
+  pointer-events: none;
+}
+
+.menu .menu-item.active .menu-link::after {
   position: absolute;
   left: 0;
   bottom: 0;
   content: '';
   width: 100%;
-  height: 10px;
+  height: 7px;
   background-color: #FFDC1E;
 }
 
-// User menu
+/* User menu */
 .user-menu {
   display: flex;
   flex-direction: row;
@@ -107,7 +125,8 @@ export default {
 
 .app-content {
   box-sizing: border-box;
+  max-width: 1980px;
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
 }
 </style>

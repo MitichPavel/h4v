@@ -5,78 +5,120 @@
         Filtry
       </h2>
     </div>
-    <div class="filter">
+    <form class="filter">
       <div class="wrap-inputs">
         <input
           type="text"
           placeholder="szukaj po wszystkim"
+          maxlength="80"
           class="filter-input input-text"
         />
-        <div class="wrap-date">
-          <label
-            class="label"
-            for="date-from"
-          >
+        <div class="group-date">
+
+          <label class="wrap-input">
+            <span class="label">
+              Data <b>od</b>
+            </span>
             <input
-              id="date-from"
-              type="text"
-              placeholder="dd/mm/rr"
-              maxlength="8"
+              ref="dateStart"
+              type="date"
               class="filter-input input-date"
+              :min="dateStart.min"
+              :max="dateStart.max"
+              @input="setStart"
             />
-            Data od
           </label>
-          <label
-            class="label"
-            for="date-till"
-          >
+
+          <label class="wrap-input">
+            <span class="label">
+              Data <b>do</b>
+            </span>
             <input
-              id="date-till"
-              type="text"
-              placeholder="dd/mm/rr"
-              maxlength="8"
+              ref="dateEnd"
+              type="date"
               class="filter-input input-date"
+              :min="dateEnd.min"
+              :max="dateEnd.max"
+              @input="setEnd"
             />
-            Data do
           </label>
-          
+
         </div>
       </div>
       <div class="footer">
-        <Button
-          btnClass="btn-filter"
+        <InputBtn
+          type="submit"
+          btnClass="filter"
+          @click.prevent="clickDate"
         >
           Filtruj
-        </Button>
-        <Button
-          btnClass="btn-clear-filter"
+        </InputBtn>
+        <InputBtn
+          type="reset"
+          btnClass="clear"
+          @click="clearInputs"
         >
           Wyczyść filtry
-        </Button>
+        </InputBtn>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
 <script>
-import Button from '@/components/Button.vue';
+import InputBtn from '@/components/InputBtn.vue';
 export default {
+  data() {
+    return {
+      dateStart: {
+        max: '',
+      },
+      dateEnd: {
+        min: '',
+        max: '',
+      },
+    };
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.setDefMaxDate();
+    });
+  },
   components: {
-    Button,
+    InputBtn,
   },
   methods: {
     clickDate() {
-      document.querySelector('#date-till').focus();
-    }
+      console.log(this.$refs.dateStart.value);
+      console.log(this.$refs.dateEnd.value);
+    },
+    clearFilter() {
+      this.$refs.dateStart.reset();
+      this.$refs.dateEnd.reset();
+    },
+    setStart() {
+      this.dateEnd.min = this.$refs.dateStart.value;
+    },
+    setEnd() {
+      this.dateStart.max = this.$refs.dateEnd.value;
+    },
+    setDefMaxDate() {
+      const today = new Date().toISOString().split("T")[0];
+      this.dateStart.max = today;
+      this.dateEnd.max = today;
+    },
+    clearInputs() {
+      this.dateEnd.min = '';
+      this.setDefMaxDate();
+    },
   },
 }
 </script>
 
-
 <style scoped>
 .sidebar {
   box-sizing: border-box;
-  width: 300px;
+  width: 100%;
   height: 100%;
   padding: 16px 18px;
   margin: 0;
@@ -100,69 +142,61 @@ export default {
   box-sizing: border-box;
   width: 100%;
   min-height: 39px;
-  padding: 0 10px;
+  padding: 0 5px 0 8px;
   margin: 0;
   border: 1px solid #000;
 }
 
-.wrap-date {
+.group-date {
   box-sizing: border-box;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 12px;
-  /* display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: stretch; */
   padding: 0;
-  margin: 14px 0 20px 0;
+  margin: 34px 0 20px 0;
 }
 
-.label {
+@media only screen and (max-width:1600px) {
+  .group-date {
+    grid-template-columns: 1fr;
+  }
+}
+
+.group-date .wrap-input {
   text-align: left;
+}
+
+.group-date .wrap-input span.label {
+  box-sizing: border-box;
+  padding: 4px 0;
+  font-size: 14px;
+  color: #000;
 }
 
 .sidebar .footer {
   box-sizing: border-box;
   width: max-content;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 12px;
+  margin: 16px 0 0 0;
 }
 
-/* #label-date-till {
-  box-sizing: border-box;
-  background-color: #fff;
-  width: 122px;
-  max-width: 122px;
-  min-height: 39px;
-  padding: 8px;
+@media only screen and (max-width:1600px) {
+  .sidebar .footer {
+    grid-template-columns: 1fr;
+  }
 }
-
-.input-text {
-  box-sizing: border-box;
-  min-width: 266px;
-}
-
-.input-date {
-  box-sizing: border-box;
-  width: 122px;
-  max-width: 122px;
-}
-
-.input-date::-webkit-calendar-picker-indicator {
-  box-sizing: border-box;
-  width: 40px;
-} */
 </style>
 <style>
-.btn-filter {
-  box-sizing: border-box;
+.sidebar .filter .footer .input-like-btn .wrap.filter {
   padding: 6px 20px;
   margin-bottom: 14px;
   background-color: #B4B4BE;
   border: 1px solid #B4B4BE;
 }
 
-.btn-clear-filter {
-  box-sizing: border-box;
+.sidebar .filter .footer .input-like-btn .wrap.clear {
   padding: 6px 20px;
   background-color: #fff;
   border: 1px solid #000;

@@ -1,21 +1,23 @@
 <template>
   <div class="main-layout">
     <nav class="navbar">
-      <ul class="menu">
-        <li class="menu-item">
-          <a href="/" class="menu-link">
-            Help4vet
-          </a>
-        </li>
-        <li class="menu-item active">
-          <a href="/cases" class="menu-link">
-            zdjęcia RTG
-          </a>
-        </li>
-      </ul>
-      <div class="user-menu">
-        <img src="./../assets/images/user.svg" class="user-icon" alt="user icon">
-        <div class="user-menu-item">Login</div>
+      <div class="wrap-navbar">
+        <ul class="menu">
+          <li class="menu-item">
+            <a href="/" class="menu-link">
+              Help4vet
+            </a>
+          </li>
+          <li class="menu-item active">
+            <a href="/cases" class="menu-link">
+              zdjęcia RTG
+            </a>
+          </li>
+        </ul>
+        <div class="user-menu">
+          <img src="./../assets/images/user.svg" class="user-icon" alt="user icon">
+          <div class="user-menu-item">Login</div>
+        </div>
       </div>
     </nav>
 
@@ -38,25 +40,28 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-// Navbar
+<style scoped>
+/* Navbar */
 .navbar {
+  background-color: #1E2832;
+}
+
+.wrap-navbar {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: flex-start;
   box-sizing: border-box;
-  padding: 17px 0 0 0;
-  margin: 0;
-  height: 55px;
-  min-height: 55px;
   width: 100%;
-  background-color: #1E2832;
+  max-width: 1980px;
+  min-height: auto;
+  padding: 17px 0 0 0;
+  margin: 0 auto;
   color: #fff;
 }
 
-// Menu
+/* Menu */
 .menu {
   display: flex;
   flex-direction: row;
@@ -72,13 +77,16 @@ export default {
 .menu .menu-item {
   position: relative;
   box-sizing: border-box;
+  width: 16vw;
+  min-width: 170px;
+  max-width: 300px;
   height: 100%;
 }
 
 .menu .menu-item .menu-link {
   display: block;
   box-sizing: border-box;
-  width: 250px;
+  width: 100%;
   padding: 0 0 16px 0;
   color: #fff;
   text-decoration: none;
@@ -94,11 +102,11 @@ export default {
   bottom: 0;
   content: '';
   width: 100%;
-  height: 5px;
+  height: 7px;
   background-color: #FFDC1E;
 }
 
-// User menu
+/* User menu */
 .user-menu {
   display: flex;
   flex-direction: row;
@@ -126,12 +134,25 @@ export default {
 
 .app-content {
   box-sizing: border-box;
+  max-width: 1980px;
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
 }
 
 .app-page {
   display: grid;
-  grid-template-columns: 1fr 5fr;
+  grid-template-columns: 380px 1fr;
+}
+
+@media only screen and (max-width:1600px) {
+  .app-page {
+    grid-template-columns: 250px 1fr;
+  }
+}
+
+@media only screen and (max-width:1280px) {
+  .app-page {
+    grid-template-columns: 200px 1fr;
+  }
 }
 </style>
