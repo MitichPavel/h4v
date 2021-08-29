@@ -2,6 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
   {
+    path: '/',
+    name: 'home',
+    meta: {layout: 'home'},
+    /* jshint ignore:start */
+    component: () => import('./../views/Home.vue'),
+    /* jshint ignore:end */
+  },
+  {
     path: '/cases',
     name: 'cases',
     meta: {layout: 'main'},
@@ -10,11 +18,11 @@ const routes = [
     /* jshint ignore:end */
   },
   {
-    path: '/',
-    name: 'home',
-    meta: {layout: 'empty'},
+    path: '/login',
+    name: 'login',
+    meta: {layout: 'login'},
     /* jshint ignore:start */
-    component: () => import('./../views/Home.vue'),
+    component: () => import('./../views/Login.vue'),
     /* jshint ignore:end */
   },
 ];

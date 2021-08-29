@@ -5,17 +5,19 @@
 </template>
 
 <script>
-import EmptyLayout from '@/layouts/EmptyLayout';
+import HomeLayout from '@/layouts/HomeLayout';
 import MainLayout from '@/layouts/MainLayout';
+import LoginLayout from '@/layouts/LoginLayout';
 
 export default {
   components: {
-    EmptyLayout,
+    HomeLayout,
     MainLayout,
+    LoginLayout,
   },
   computed: {
     layout() {
-      return (this.$route.meta.layout || 'empty') + '-layout';
+      return (this.$route.meta.layout || 'home') + '-layout';
     }
   },
 }
