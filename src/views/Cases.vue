@@ -60,36 +60,6 @@
             Wyślij do opisu
           </Button>
         </li>
-        <li class="case-item">
-          <div class="wrap-img">
-            <img src="@/assets/images/photo.jpg" alt="photo" class="img">
-          </div>
-          <div class="id">
-            545543543
-          </div>
-          <div class="date">
-            data  badania
-          </div>
-          <div class="owner">
-            józef Kowalski
-          </div>
-          <div class="patient">
-            Pucio
-          </div>
-          <div class="species">
-            kot
-          </div>
-          <Button
-            btnClass="btn-open"
-          >
-            Otwórz
-          </Button>
-          <Button
-            btnClass="btn-send"
-          >
-            Wyślij do opisu
-          </Button>
-        </li>
       </ul>
     </div>
   </div>
@@ -100,7 +70,18 @@ import Button from '@/components/Button.vue';
 export default {
   components: {
     Button,
-  }
+  },
+  mounted() {
+    this.getData();
+  },
+  methods: {
+    getData() {
+      this.axios.get('https://ddicomdemo20210806204758.azurewebsites.net/Entries').then((response) => {
+        console.log(response.data);
+        this.cases = response.data.data;
+      });
+    },
+  },
 }
 </script>
 
