@@ -8,6 +8,7 @@
     <form class="filter">
       <div class="wrap-inputs">
         <input
+          ref="searchText"
           type="text"
           placeholder="szukaj po wszystkim"
           maxlength="80"
@@ -89,6 +90,7 @@ export default {
   },
   methods: {
     clickDate() {
+      console.log(this.$refs.searchText.value);
       console.log(this.$refs.dateStart.value);
       console.log(this.$refs.dateEnd.value);
     },

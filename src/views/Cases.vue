@@ -30,24 +30,34 @@
 
     <div class="content">
       <ul class="case-list">
-        <li class="case-item">
+        <li
+          v-for="(item, i) in cases"
+          :key="i"
+          class="case-item"
+        >
           <div class="wrap-img">
-            <img src="@/assets/images/photo.jpg" alt="photo" class="img">
+            <a href="#" class="img-link">
+              <img
+                :src="src + item.thumbnail"
+                alt="photo"
+                class="img"
+              >
+            </a>
           </div>
           <div class="id">
-            545543543
+            {{ item.studyId }}
           </div>
           <div class="date">
-            data  badania
+            {{ new Date(item.studyDate).toLocaleDateString() }}
           </div>
           <div class="owner">
-            józef Kowalski
+            {{ item.responsiblePerson }}
           </div>
           <div class="patient">
-            Pucio
+            {{ item.patientName }}
           </div>
           <div class="species">
-            kot
+            {{ item.patientSpeciesDescription }}
           </div>
           <Button
             btnClass="btn-open"
@@ -71,14 +81,26 @@ export default {
   components: {
     Button,
   },
+  data() {
+    return {
+      cases: null,
+      src: 'data:image/jpeg;base64,',
+    };
+  },
   mounted() {
     this.getData();
   },
   methods: {
     getData() {
       this.axios.get('https://ddicomdemo20210806204758.azurewebsites.net/Entries').then((response) => {
-        console.log(response.data);
-        this.cases = response.data.data;
+        this.cases = [...response.data.data];
+        console.log(this.cases);
+      });
+    },
+    getPhoto(i) {
+      this.axios.get('https://ddicomdemo20210806204758.azurewebsites.net/Entries?pageSize=1&filter=%20').then((response) => {
+        console.log(response.data.data[i]);
+        this.src += response.data.data[i].thumbnail;
       });
     },
   },
@@ -156,7 +178,11 @@ export default {
   background-color: #F8F8F8;
 }
 
-.img {
+.cases .content .case-list .case-item .img-link:hover {
+  cursor: zoom-in;
+}
+
+.cases .content .case-list .case-item .img {
   display: block;
   line-height: 0;
   box-sizing: border-box;
