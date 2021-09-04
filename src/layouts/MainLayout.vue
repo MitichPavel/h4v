@@ -1,6 +1,8 @@
 <template>
   <div class="main-layout">
-    <BidImage />
+    <BidImage
+      v-if="visibilityBigImage"
+    />
 
     <Navbar />
 
@@ -16,16 +18,19 @@
 <script>
 import Sidebar from '@/components/app/Sidebar.vue';
 import Navbar from '@/components/app/Navbar.vue';
-// import { defineAsyncComponent } from 'vue';
-import BidImage from '@/components/BigImage.vue';
+import { defineAsyncComponent } from 'vue';
 
 export default {
   components: {
     Sidebar,
     Navbar,
-    BidImage,
-    // BidImage: defineAsyncComponent(() => import('@/components/BigImage.vue')),
-  }
+    BidImage: defineAsyncComponent(() => import('@/components/BigImage.vue')),
+  },
+  computed: {
+    visibilityBigImage() {
+      return this.$store.getters.visibilityBigImage;
+    },
+  },
 }
 </script>
 

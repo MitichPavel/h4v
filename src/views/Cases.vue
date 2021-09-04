@@ -35,14 +35,15 @@
           :key="i"
           class="case-item"
         >
-          <div class="wrap-img">
-            <a href="#" class="img-link">
-              <img
-                :src="src + item.thumbnail"
-                alt="photo"
-                class="img"
-              >
-            </a>
+          <div
+            class="wrap-img"
+            @click="openBigImage"
+          >
+            <img
+              :src="src + item.thumbnail"
+              alt="photo"
+              class="img"
+            >
           </div>
           <div class="id">
             {{ item.studyId }}
@@ -77,6 +78,7 @@
 
 <script>
 import Button from '@/components/Button.vue';
+
 export default {
   components: {
     Button,
@@ -85,6 +87,12 @@ export default {
     return {
       cases: null,
       src: 'data:image/jpeg;base64,',
+      filePath: null,
+      filterParams: {
+        filter: null,
+        from: null,
+        to: null,
+      },
     };
   },
   mounted() {
@@ -97,11 +105,28 @@ export default {
         console.log(this.cases);
       });
     },
-    getPhoto(i) {
-      this.axios.get('https://ddicomdemo20210806204758.azurewebsites.net/Entries?pageSize=1&filter=%20').then((response) => {
-        console.log(response.data.data[i]);
-        this.src += response.data.data[i].thumbnail;
+    // crateRequestURL() {
+    //   let path = '?';
+    //   if (this.filterParams.filter !== null && typeof this.filterParams.filter !== 'object') {
+    //     path += 'filter=' + toString(this.filterParams.filter);
+    //   }
+    //   if (path !== '?')
+    //   ?filter=nnn&from=2021-08-13&to=2021-08-13
+    // },
+    getFiltredData() {
+      this.axios.get('https://ddicomdemo20210806204758.azurewebsites.net/Entries').then((response) => {
+        this.cases = [...response.data.data];
+        console.log(this.cases);
       });
+    },
+    getPhotoPath(i) {
+      this.axios.get('https://ddicomdemo20210806204758.azurewebsites.net/Entries').then((response) => {
+        console.log(response.data.data[i].filePath);
+        this.filePath = response.data.data[i].filePath;
+      });
+    },
+    openBigImage() {
+      this.$store.commit('showBigImage');
     },
   },
 }
@@ -174,12 +199,12 @@ export default {
   }
 }
 
-.case-item:nth-child(2n) {
-  background-color: #F8F8F8;
+.cases .content .case-list .case-item:hover {
+  cursor: zoom-in;
 }
 
-.cases .content .case-list .case-item .img-link:hover {
-  cursor: zoom-in;
+.case-item:nth-child(2n) {
+  background-color: #F8F8F8;
 }
 
 .cases .content .case-list .case-item .img {
