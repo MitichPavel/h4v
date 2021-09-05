@@ -1,6 +1,9 @@
 <template>
   <div class="overlay">
-    <div class="window">
+    <div
+      :class="{ loading : imageLoader }"
+      class="window"
+    >
       <div class="bar">
         <div
           class="wrap-close"
@@ -19,6 +22,11 @@
 
 <script>
 export default {
+  computed: {
+    imageLoader() {
+      return this.$store.getters.imageLoader;
+    },
+  },
   mounted() {
     this.$nextTick(() => {
       this.pageScroll(false);
@@ -49,10 +57,12 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  max-width: 2000px;
   width: 100vw;
   height: 100vh;
   z-index: 100;
 }
+
 .overlay .window {
   position: relative;
   box-sizing: border-box;
@@ -63,6 +73,7 @@ export default {
   display: flex;
   flex-direction: column;
 }
+
 .overlay .window .bar {
   box-sizing: border-box;
   width: 100%;
@@ -72,6 +83,7 @@ export default {
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
 }
+
 .overlay .window .wrap-img {
   box-sizing: border-box;
   width: 100%;
@@ -79,9 +91,11 @@ export default {
   border-top: 1px solid #bdbdd4;
   z-index: 101;
 }
+
 .overlay .window.loading .wrap-img {
   display: none;
 }
+
 .overlay .window .loader {
   box-sizing: border-box;
   display: none;
@@ -93,9 +107,11 @@ export default {
   transform: translate(-50%, -50%);
   z-index: 1000;
 }
+
 .overlay .window.loading .loader {
   display: block;
 }
+
 .overlay .window .bar .wrap-close {
   box-sizing: border-box;
   display: block;
@@ -106,6 +122,7 @@ export default {
   border-radius: 2px;
   cursor: pointer;
 }
+
 .overlay .window .bar .wrap-close .close {
   box-sizing: border-box;
   display: block;

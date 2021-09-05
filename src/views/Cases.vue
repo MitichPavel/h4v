@@ -1,5 +1,8 @@
 <template>
-  <div class="cases">
+  <div
+    :class="{ loading : patientsDataLoader }"
+    class="cases"
+  >
     <div class="wrap-page-title">
       <h2 class="page-title">
         Lista zdjęć RTG DIACOM
@@ -31,7 +34,7 @@
     <div class="content">
       <ul class="case-list">
         <li
-          v-for="(item, i) in cases"
+          v-for="(item, i) in caseList"
           :key="i"
           class="case-item"
         >
@@ -72,6 +75,8 @@
           </Button>
         </li>
       </ul>
+
+      <img src="@/assets/images/svg/loader.svg" class="loader">
     </div>
   </div>
 </template>
@@ -85,46 +90,18 @@ export default {
   },
   data() {
     return {
-      cases: null,
       src: 'data:image/jpeg;base64,',
-      filePath: null,
-      filterParams: {
-        filter: null,
-        from: null,
-        to: null,
-      },
     };
   },
-  mounted() {
-    this.getData();
+  computed: {
+    caseList() {
+      return this.$store.getters.getFiltredData || this.$store.getters.getData;
+    },
+    patientsDataLoader() {
+      return this.$store.getters.patientsDataLoader;
+    },
   },
   methods: {
-    getData() {
-      this.axios.get('https://ddicomdemo20210806204758.azurewebsites.net/Entries').then((response) => {
-        this.cases = [...response.data.data];
-        console.log(this.cases);
-      });
-    },
-    // crateRequestURL() {
-    //   let path = '?';
-    //   if (this.filterParams.filter !== null && typeof this.filterParams.filter !== 'object') {
-    //     path += 'filter=' + toString(this.filterParams.filter);
-    //   }
-    //   if (path !== '?')
-    //   ?filter=nnn&from=2021-08-13&to=2021-08-13
-    // },
-    getFiltredData() {
-      this.axios.get('https://ddicomdemo20210806204758.azurewebsites.net/Entries').then((response) => {
-        this.cases = [...response.data.data];
-        console.log(this.cases);
-      });
-    },
-    getPhotoPath(i) {
-      this.axios.get('https://ddicomdemo20210806204758.azurewebsites.net/Entries').then((response) => {
-        console.log(response.data.data[i].filePath);
-        this.filePath = response.data.data[i].filePath;
-      });
-    },
     openBigImage() {
       this.$store.commit('showBigImage');
     },
@@ -134,6 +111,7 @@ export default {
 
 <style>
 .cases {
+  position: relative;
   box-sizing: border-box;
   padding: 0 20px;
   margin: 0;
@@ -178,7 +156,23 @@ export default {
   list-style-type: none;
 }
 
-.case-list {
+.cases .content .loader {
+  box-sizing: border-box;
+  display: none;
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  top: 240px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.cases.loading .content .loader {
+  display: block;
+}
+
+.cases .content .case-list {
   list-style-type: none;
 }
 
@@ -199,10 +193,6 @@ export default {
   }
 }
 
-.cases .content .case-list .case-item:hover {
-  cursor: zoom-in;
-}
-
 .case-item:nth-child(2n) {
   background-color: #F8F8F8;
 }
@@ -213,6 +203,10 @@ export default {
   box-sizing: border-box;
   width: 100%;
   height: auto;
+}
+
+.cases .content .case-list .case-item .img:hover {
+  cursor: zoom-in;
 }
 </style>>
 <style>

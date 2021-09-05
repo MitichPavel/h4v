@@ -9,6 +9,8 @@
       <div class="wrap-inputs">
         <input
           ref="searchText"
+          v-model="filterParams.filter"
+          autocomplete="off"
           type="text"
           placeholder="szukaj po wszystkim"
           maxlength="80"
@@ -22,6 +24,8 @@
             </span>
             <input
               ref="dateStart"
+              v-model="filterParams.from"
+              autocomplete="off"
               type="date"
               class="filter-input input-date"
               :min="dateStart.min"
@@ -36,6 +40,8 @@
             </span>
             <input
               ref="dateEnd"
+              v-model="filterParams.to"
+              autocomplete="off"
               type="date"
               class="filter-input input-date"
               :min="dateEnd.min"
@@ -50,7 +56,7 @@
         <InputBtn
           type="submit"
           btnClass="filter"
-          @click.prevent="clickDate"
+          @click.prevent="getFiltredDataFromServer(url)"
         >
           Filtruj
         </InputBtn>
@@ -71,6 +77,12 @@ import InputBtn from '@/components/InputBtn.vue';
 export default {
   data() {
     return {
+      filterParams: {
+        filter: '',
+        from: '',
+        to: '',
+      },
+      url: 'https://ddicomdemo20210806204758.azurewebsites.net/Entries',
       dateStart: {
         max: '',
       },
@@ -83,20 +95,57 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.setDefMaxDate();
+
+      this.getDataFromServer(this.url);
     });
   },
   components: {
     InputBtn,
   },
   methods: {
-    clickDate() {
-      console.log(this.$refs.searchText.value);
-      console.log(this.$refs.dateStart.value);
-      console.log(this.$refs.dateEnd.value);
+
+    getDataFromServer(url) {
+      this.axios.get(url).then((response) => {
+        this.$store.commit('setData', [...response.data.data]);
+      });
+    },
+    getFiltredDataFromServer(url) {
+      const path = this.createRequestPath();
+      if (path === '') return;
+      const newUrl = url + path;
+      console.log(newUrl);
+      console.log(this.filterParams);
+
+      this.axios.get(newUrl).then((response) => {
+        this.$store.commit('setFiltredData', [...response.data.data]);
+      });
+    },
+    createRequestPath() {
+      const params = {...this.filterParams};
+      let requestSymb = '?';
+      let path = '';
+
+      /* change the date "to" to filter with this date inclusive */
+      if (params.to !== '') {
+        params.to = this.incrementDate(params.to);
+      }
+
+      Object.entries(params).forEach((input) => {
+        if (input[1] !== '') {
+          path += requestSymb + input[0] + '=' +input[1];
+          requestSymb = '&';
+        } else {
+          path += '';
+        }
+      });
+
+      return path;
     },
     clearFilter() {
-      this.$refs.dateStart.reset();
-      this.$refs.dateEnd.reset();
+      this.$store.commit('clearFilter');
+      this.$store.commit('clearFiltredData');
+
+      this.getDataFromServer(this.url);
     },
     setStart() {
       this.dateEnd.min = this.$refs.dateStart.value;
@@ -112,6 +161,11 @@ export default {
     clearInputs() {
       this.dateEnd.min = '';
       this.setDefMaxDate();
+    },
+    incrementDate(dateString) {
+      /* correct format dateString  - 'yyyy-mm-dd' */
+      return new Date(new Date(dateString).setDate(new Date(dateString).getDate() + 1))
+        .toISOString().split("T")[0];
     },
   },
 }
