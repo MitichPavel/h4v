@@ -63,7 +63,7 @@
         <InputBtn
           type="reset"
           btnClass="clear"
-          @click="clearInputs"
+          @click="clearFilter"
         >
           Wyczyść filtry
         </InputBtn>
@@ -103,7 +103,6 @@ export default {
     InputBtn,
   },
   methods: {
-
     getDataFromServer(url) {
       this.axios.get(url).then((response) => {
         this.$store.commit('setData', [...response.data.data]);
@@ -132,7 +131,7 @@ export default {
 
       Object.entries(params).forEach((input) => {
         if (input[1] !== '') {
-          path += requestSymb + input[0] + '=' +input[1];
+          path += requestSymb + input[0] + '=' + encodeURIComponent(input[1]);
           requestSymb = '&';
         } else {
           path += '';
@@ -144,6 +143,8 @@ export default {
     clearFilter() {
       this.$store.commit('clearFilter');
       this.$store.commit('clearFiltredData');
+
+      this.clearInputs();
 
       this.getDataFromServer(this.url);
     },
