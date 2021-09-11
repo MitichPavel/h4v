@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{ loading : patientsDataLoader }"
+    :class="{ loading : !caseList }"
     class="cases"
   >
     <div class="wrap-page-title">
@@ -40,13 +40,11 @@
         >
           <div
             class="wrap-img"
-            @click="openBigImage"
+            @click="saveId(item.id)"
           >
-            <img
-              :src="src + item.thumbnail"
-              alt="photo"
-              class="img"
-            >
+            <SmallImage
+              :imageId="item.id"
+            />
           </div>
           <div class="id">
             {{ item.studyId }}
@@ -83,27 +81,22 @@
 
 <script>
 import Button from '@/components/Button.vue';
+import SmallImage from '@/components/SmallImage.vue';
 
 export default {
   components: {
     Button,
-  },
-  data() {
-    return {
-      src: 'data:image/jpeg;base64,',
-    };
+    SmallImage,
   },
   computed: {
     caseList() {
       return this.$store.getters.getFiltredData || this.$store.getters.getData;
     },
-    patientsDataLoader() {
-      return this.$store.getters.patientsDataLoader;
-    },
   },
   methods: {
-    openBigImage() {
+    saveId(id) {
       this.$store.commit('showBigImage');
+      this.$store.commit('setBigImgId', id);
     },
   },
 }
@@ -179,6 +172,7 @@ export default {
 .cases .content .case-list .case-item {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: max-content;
   grid-gap: 10px;
   align-items: center;
   box-sizing: border-box;
@@ -193,20 +187,15 @@ export default {
   }
 }
 
-.case-item:nth-child(2n) {
+.cases .content .case-list .case-item:nth-child(2n) {
   background-color: #F8F8F8;
 }
 
-.cases .content .case-list .case-item .img {
-  display: block;
-  line-height: 0;
+.cases .content .case-list .case-item .wrap-img {
   box-sizing: border-box;
   width: 100%;
-  height: auto;
-}
-
-.cases .content .case-list .case-item .img:hover {
-  cursor: zoom-in;
+  height: 100%;
+  background-color:#000;
 }
 </style>>
 <style>

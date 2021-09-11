@@ -2,12 +2,11 @@ import { createStore } from 'vuex';
 
 export default createStore({
   state: {
-    patientsDataLoader: false,
-    imageLoader: false,
     data: null,
     filtredData: null,
     bigImage: {
       visibility: false,
+      id: null,
     },
     filterParams: {
       filter: null,
@@ -17,11 +16,7 @@ export default createStore({
     filterPath: null,
   },
   mutations: {
-    patientsDataLoaderON: (state) => state.patientsDataLoader = true,
-    patientsDataLoaderOFF: (state) => state.patientsDataLoader = false,
-
-    imageLoaderON: (state) => state.imageLoader = true,
-    imageLoaderOFF: (state) => state.imageLoader = false,
+    setBigImgId: (state, id) => state.bigImage.id = id,
 
     setData: (state, serverData) => state.data = serverData,
     clearData: (state) => state.data = null,
@@ -41,8 +36,9 @@ export default createStore({
     },
   },
   getters: {
+    getBigImgId: (state) => state.bigImage.id,
+
     patientsDataLoader: (state) => state.patientsDataLoader,
-    imageLoader: (state) => state.imageLoader,
 
     getData: (state) => state.data,
     getFiltredData: (state) => state.filtredData,

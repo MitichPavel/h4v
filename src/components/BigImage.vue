@@ -1,7 +1,7 @@
 <template>
   <div class="overlay">
     <div
-      :class="{ loading : imageLoader }"
+      :class="{ loading : loading }"
       class="window"
     >
       <div class="bar">
@@ -13,7 +13,10 @@
         </div>
       </div>
       <div class="wrap-img">
-        <img src="#" alt="#" class="img">
+        <img
+          ref="img"
+          class="img"
+        >
       </div>
       <img src="@/assets/images/svg/loader_white.svg" class="loader">
     </div>
@@ -22,17 +25,30 @@
 
 <script>
 export default {
+  data() {
+    return {
+      loading: true,
+    };
+  },
   computed: {
-    imageLoader() {
-      return this.$store.getters.imageLoader;
+    srcBigImg() {
+      return this.$store.getters.getBigImgSrc;
     },
   },
   mounted() {
     this.$nextTick(() => {
       this.pageScroll(false);
+      this.getBigImg();
     });
   },
   methods: {
+    getBigImg() {
+      const id = this.$store.getters.getBigImgId;
+      this.axios.get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries/photo/${id}`)
+        .then((response) => {
+          this.$refs.img.setAttribute('src', response.config.url);
+        });
+    },
     closeBigImage() {
       this.pageScroll(true);
       this.$store.commit('hideBigImage');
@@ -68,7 +84,7 @@ export default {
   box-sizing: border-box;
   width: calc(100% - 40px);
   height: calc(100% - 40px);
-  background-color: #cad2da;
+  background-color: #1E2832;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -87,13 +103,20 @@ export default {
 .overlay .window .wrap-img {
   box-sizing: border-box;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 42px);
+  padding: 30px;
   border-top: 1px solid #bdbdd4;
   z-index: 101;
 }
 
 .overlay .window.loading .wrap-img {
   display: none;
+}
+
+.overlay .window .wrap-img .img {
+  width: 700px;
+  aspect-ratio: auto 700 / 600;
+  height: 600px;
 }
 
 .overlay .window .loader {
