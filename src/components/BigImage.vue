@@ -16,6 +16,10 @@
         <img
           ref="img"
           class="img"
+          draggable="false"
+          @mousemove.self="moveOn"
+          @mousedown="getOffset"
+          @mouseup="moveOff"
         >
       </div>
       <img src="@/assets/images/svg/loader_white.svg" class="loader">
@@ -28,6 +32,8 @@ export default {
   data() {
     return {
       loading: true,
+      isDown: false,
+      offset: [0, 0],
     };
   },
   computed: {
@@ -42,11 +48,30 @@ export default {
     });
   },
   methods: {
+    getOffset(e) {
+      console.log('down', this.$refs.img.offsetLeft);
+      this.isDown = true;
+      this.offset[0] = this.$refs.img.offsetLeft - e.clientX;
+      this.offset[1] = this.$refs.img.offsetTop - e.clientY;
+    },
+    moveOn(e) {
+      console.log('move');
+      if (this.isDown) {
+        console.log('move and down');
+        this.$refs.img.style.left = (e.clientX + this.offset[0]) + 'px';
+        this.$refs.img.style.top  = (e.clientY + this.offset[1]) + 'px';
+      }
+    },
+    moveOff() {
+      console.log('up');
+      this.isDown = false;
+    },
     getBigImg() {
       const id = this.$store.getters.getBigImgId;
       this.axios.get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries/photo/${id}`)
         .then((response) => {
           this.$refs.img.setAttribute('src', response.config.url);
+          this.loading = false;
         });
     },
     closeBigImage() {
@@ -82,8 +107,8 @@ export default {
 .overlay .window {
   position: relative;
   box-sizing: border-box;
-  width: calc(100% - 40px);
-  height: calc(100% - 40px);
+  width: 100%;
+  height: 100%;
   background-color: #1E2832;
   border-radius: 5px;
   display: flex;
@@ -101,10 +126,14 @@ export default {
 }
 
 .overlay .window .wrap-img {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   box-sizing: border-box;
   width: 100%;
   height: calc(100% - 42px);
-  padding: 30px;
+  padding: 30px 30px 80px 30px;
   border-top: 1px solid #bdbdd4;
   z-index: 101;
 }
@@ -114,9 +143,11 @@ export default {
 }
 
 .overlay .window .wrap-img .img {
-  width: 700px;
-  aspect-ratio: auto 700 / 600;
-  height: 600px;
+  position: absolute; 
+  left: 0; 
+  top: 0; 
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .overlay .window .loader {

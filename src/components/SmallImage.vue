@@ -38,8 +38,4 @@ export default {
   width: 100%;
   height: auto;
 }
-
-.img:hover {
-  cursor: zoom-in;
-}
 </style>

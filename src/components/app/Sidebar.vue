@@ -105,6 +105,7 @@ export default {
   methods: {
     getDataFromServer(url) {
       this.axios.get(url).then((response) => {
+        console.log(response.data.count);
         this.$store.commit('setData', [...response.data.data]);
       });
     },

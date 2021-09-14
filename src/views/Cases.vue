@@ -176,6 +176,7 @@ export default {
   grid-gap: 10px;
   align-items: center;
   box-sizing: border-box;
+  height: 100%;
   padding: 5px;
   border-top: 2px solid #DFE2E6;
   font-size: 18px;
@@ -195,7 +196,24 @@ export default {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  background-color:#000;
+  min-height: 122.3px;
+  background-image: url(./../assets/images/svg/loader.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30%;
+  cursor: zoom-in;
+}
+
+@media only screen and (max-width: 1600px) {
+  .cases .content .case-list .case-item .wrap-img {
+    min-height: calc((100vw - 570px) / 8);
+  }
+}
+
+@media only screen and (max-width: 1280px) {
+  .cases .content .case-list .case-item .wrap-img {
+    min-height: calc((100vw - 470px) / 8);
+  }
 }
 </style>>
 <style>
