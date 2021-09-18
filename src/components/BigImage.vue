@@ -91,7 +91,7 @@ export default {
           clearInterval(initScale);
           this.loading = false;
 
-          this.maxScale = this.scale();
+          this.maxScale = this.scale() * 2;
           this.stepScale = this.maxScale / 10;
         }
       }, 200);
