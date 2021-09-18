@@ -179,7 +179,7 @@ export default {
 
 .overlay .window .wrap {
   height: calc(100% - 42px);
-  padding: 30px 30px 80px 30px;
+  padding: 30px 30px 60px 30px;
   border-top: 1px solid #bdbdd4;
 }
 
@@ -259,8 +259,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 29px;
-  width: 29px;
+  height: 32px;
+  width: 32px;
   overflow: hidden;
   cursor: pointer;
   box-sizing: border-box;
