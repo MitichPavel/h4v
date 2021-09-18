@@ -16,11 +16,17 @@
         ref="wrap"
         class="wrap"
       >
-        <div class="wrap-img">
+        <div
+          class="wrap-img"
+          @mouseleave="moveOff"
+        >
           <img
             ref="img"
             class="img"
             draggable="false"
+            @mousedown="getOffset"
+            @mousemove="moveOn"
+            @mouseup="moveOff"
           >
         </div>
       </div>
@@ -66,6 +72,11 @@ export default {
   data() {
     return {
       loading: true,
+
+      isDown: false,
+      isMove: false,
+      offset: [0, 0],
+
       maxScale: null,
       stepScale: null,
       currentScale: 1,
@@ -98,6 +109,28 @@ export default {
     });
   },
   methods: {
+    getOffset(e) {
+      if (this.currentScale > 1) {
+        this.isDown = true;
+        this.offset[0] = this.$refs.img.offsetLeft - e.clientX;
+        this.offset[1] = this.$refs.img.offsetTop - e.clientY;
+      }
+    },
+    moveOn(e) {
+      if (this.currentScale > 1) {
+        this.isMove = true;
+
+        if (this.isDown) {
+          this.$refs.img.style.left = (e.clientX + this.offset[0]) + 'px';
+          this.$refs.img.style.top  = (e.clientY + this.offset[1]) + 'px';
+        }
+      }
+    },
+    moveOff() {
+      this.isMove = false;
+      this.isDown = false;
+    },
+
     scale() {
       return this.renderedImg.height / parseInt(getComputedStyle(this.$refs.wrap).height, 10) - 1;
     },
@@ -118,6 +151,7 @@ export default {
 
       this.$refs.img.style.transform = `scale(${this.currentScale + step})`;
     },
+
     getBigImg() {
       const id = this.$store.getters.getBigImgId;
       this.axios.get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries/photo/${id}`)
@@ -129,6 +163,7 @@ export default {
       this.pageScroll(true);
       this.$store.commit('hideBigImage');
     },
+
     pageScroll(scroll = false) {
       if (!scroll) {
         document.body.style.overflow = 'hidden';
