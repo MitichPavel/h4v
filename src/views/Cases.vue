@@ -1,5 +1,8 @@
 <template>
-  <div class="cases">
+  <div
+    :class="{ loading : !caseList }"
+    class="cases"
+  >
     <div class="wrap-page-title">
       <h2 class="page-title">
         Lista zdjęć RTG DIACOM
@@ -30,54 +33,33 @@
 
     <div class="content">
       <ul class="case-list">
-        <li class="case-item">
-          <div class="wrap-img">
-            <img src="@/assets/images/photo.jpg" alt="photo" class="img">
+        <li
+          v-for="(item, i) in caseList"
+          :key="i"
+          class="case-item"
+        >
+          <div
+            class="wrap-img"
+            @click="saveId(item.id)"
+          >
+            <SmallImage
+              :imageId="item.id"
+            />
           </div>
           <div class="id">
-            545543543
+            {{ item.studyId }}
           </div>
           <div class="date">
-            data  badania
+            {{ new Date(item.studyDate).toLocaleDateString() }}
           </div>
           <div class="owner">
-            józef Kowalski
+            {{ item.responsiblePerson }}
           </div>
           <div class="patient">
-            Pucio
+            {{ item.patientName }}
           </div>
           <div class="species">
-            kot
-          </div>
-          <Button
-            btnClass="btn-open"
-          >
-            Otwórz
-          </Button>
-          <Button
-            btnClass="btn-send"
-          >
-            Wyślij do opisu
-          </Button>
-        </li>
-        <li class="case-item">
-          <div class="wrap-img">
-            <img src="@/assets/images/photo.jpg" alt="photo" class="img">
-          </div>
-          <div class="id">
-            545543543
-          </div>
-          <div class="date">
-            data  badania
-          </div>
-          <div class="owner">
-            józef Kowalski
-          </div>
-          <div class="patient">
-            Pucio
-          </div>
-          <div class="species">
-            kot
+            {{ item.patientSpeciesDescription }}
           </div>
           <Button
             btnClass="btn-open"
@@ -91,21 +73,38 @@
           </Button>
         </li>
       </ul>
+
+      <img src="@/assets/images/svg/loader.svg" class="loader">
     </div>
   </div>
 </template>
 
 <script>
 import Button from '@/components/Button.vue';
+import SmallImage from '@/components/SmallImage.vue';
+
 export default {
   components: {
     Button,
-  }
+    SmallImage,
+  },
+  computed: {
+    caseList() {
+      return this.$store.getters.getFiltredData || this.$store.getters.getData;
+    },
+  },
+  methods: {
+    saveId(id) {
+      this.$store.commit('showBigImage');
+      this.$store.commit('setBigImgId', id);
+    },
+  },
 }
 </script>
 
 <style>
 .cases {
+  position: relative;
   box-sizing: border-box;
   padding: 0 20px;
   margin: 0;
@@ -150,16 +149,34 @@ export default {
   list-style-type: none;
 }
 
-.case-list {
+.cases .content .loader {
+  box-sizing: border-box;
+  display: none;
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  top: 240px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.cases.loading .content .loader {
+  display: block;
+}
+
+.cases .content .case-list {
   list-style-type: none;
 }
 
 .cases .content .case-list .case-item {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: max-content;
   grid-gap: 10px;
   align-items: center;
   box-sizing: border-box;
+  height: 100%;
   padding: 5px;
   border-top: 2px solid #DFE2E6;
   font-size: 18px;
@@ -171,16 +188,32 @@ export default {
   }
 }
 
-.case-item:nth-child(2n) {
+.cases .content .case-list .case-item:nth-child(2n) {
   background-color: #F8F8F8;
 }
 
-.img {
-  display: block;
-  line-height: 0;
+.cases .content .case-list .case-item .wrap-img {
   box-sizing: border-box;
   width: 100%;
-  height: auto;
+  height: 100%;
+  min-height: 122.3px;
+  background-image: url(./../assets/images/svg/loader.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30%;
+  cursor: zoom-in;
+}
+
+@media only screen and (max-width: 1600px) {
+  .cases .content .case-list .case-item .wrap-img {
+    min-height: calc((100vw - 570px) / 8);
+  }
+}
+
+@media only screen and (max-width: 1280px) {
+  .cases .content .case-list .case-item .wrap-img {
+    min-height: calc((100vw - 470px) / 8);
+  }
 }
 </style>>
 <style>

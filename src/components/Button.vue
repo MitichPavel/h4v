@@ -35,7 +35,6 @@ export default {
   padding: 6px 10px;
   margin: 0;
   border: 1px solid #000;
-  white-space: nowrap;
   cursor: pointer;
 }
 </style>

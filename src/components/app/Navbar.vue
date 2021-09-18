@@ -31,7 +31,7 @@
             :class="{ active : isActive }"
           >
             <a :href="href" class="link">
-              <img src="@/assets/images/user.svg" class="user-icon" alt="user icon">
+              <img src="@/assets/images/svg/user.svg" class="user-icon" alt="user icon">
               <div class="login">Login</div>
             </a>
           </div>

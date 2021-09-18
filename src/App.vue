@@ -18,7 +18,7 @@ export default {
   computed: {
     layout() {
       return (this.$route.meta.layout || 'home') + '-layout';
-    }
+    },
   },
 }
 </script>
