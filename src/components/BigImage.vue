@@ -12,15 +12,49 @@
           <img src="@/assets/images/svg/x.svg" class="close">
         </div>
       </div>
-      <div class="wrap-img">
-        <img
-          ref="img"
-          class="img"
-          draggable="false"
-          @mousemove.self="moveOn"
-          @mousedown="getOffset"
-          @mouseup="moveOff"
+      <div
+        ref="wrap"
+        class="wrap"
+      >
+        <div class="wrap-img">
+          <img
+            ref="img"
+            class="img"
+            draggable="false"
+          >
+        </div>
+      </div>
+      <div class="zoom-widget">
+        <div
+          class="zoom-out"
+          :class="{ disabled : currentScale === 1 }"
+          @click="() => {
+            if (currentScale === 1) return;
+            zoom(-stepScale);
+          }"  
         >
+          <img 
+            class="icon" 
+            src="@/assets/images/svg/zoom_out.svg" 
+            alt="zoom out"
+            draggable="false"
+          >
+        </div>
+        <div 
+          class="zoom-in"
+          :class="{ disabled : currentScale === maxScale }"
+          @click="() => {
+            if (currentScale === maxScale) return;
+            zoom(stepScale);
+          }"
+        >
+          <img
+            class="icon"
+            src="@/assets/images/svg/zoom_in.svg"
+            alt="zoom in"
+            draggable="false"
+          >
+        </div>
       </div>
       <img src="@/assets/images/svg/loader_white.svg" class="loader">
     </div>
@@ -32,46 +66,63 @@ export default {
   data() {
     return {
       loading: true,
-      isDown: false,
-      offset: [0, 0],
+      maxScale: null,
+      stepScale: null,
+      currentScale: 1,
     };
   },
   computed: {
-    srcBigImg() {
-      return this.$store.getters.getBigImgSrc;
+    computedWidth() {
+      return parseInt(getComputedStyle(this.$refs.img).width, 10);
+    },
+    naturalWidth() {
+      return this.$refs.img.naturalWidth;
+    },
+    renderedImg() {
+      return document.querySelector('.img');
     },
   },
   mounted() {
     this.$nextTick(() => {
       this.pageScroll(false);
       this.getBigImg();
+      const initScale = setInterval(() => {
+        if (this.renderedImg.height) {
+          clearInterval(initScale);
+          this.loading = false;
+
+          this.maxScale = this.scale();
+          this.stepScale = this.maxScale / 10;
+        }
+      }, 200);
     });
   },
   methods: {
-    getOffset(e) {
-      console.log('down', this.$refs.img.offsetLeft);
-      this.isDown = true;
-      this.offset[0] = this.$refs.img.offsetLeft - e.clientX;
-      this.offset[1] = this.$refs.img.offsetTop - e.clientY;
+    scale() {
+      return this.renderedImg.height / parseInt(getComputedStyle(this.$refs.wrap).height, 10) - 1;
     },
-    moveOn(e) {
-      console.log('move');
-      if (this.isDown) {
-        console.log('move and down');
-        this.$refs.img.style.left = (e.clientX + this.offset[0]) + 'px';
-        this.$refs.img.style.top  = (e.clientY + this.offset[1]) + 'px';
+    zoom(step) {
+      this.currentScale += step;
+
+      if (this.currentScale <= 1) {
+        this.currentScale = 1;
+        this.$refs.img.style.transform = 'scale(1)';
+        return;
       }
-    },
-    moveOff() {
-      console.log('up');
-      this.isDown = false;
+
+      if (this.currentScale >= this.maxScale) {
+        this.currentScale = this.maxScale;
+        this.$refs.img.style.transform = `scale(${this.maxScale})`;
+        return;
+      }
+
+      this.$refs.img.style.transform = `scale(${this.currentScale + step})`;
     },
     getBigImg() {
       const id = this.$store.getters.getBigImgId;
       this.axios.get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries/photo/${id}`)
         .then((response) => {
           this.$refs.img.setAttribute('src', response.config.url);
-          this.loading = false;
         });
     },
     closeBigImage() {
@@ -113,6 +164,7 @@ export default {
   border-radius: 5px;
   display: flex;
   flex-direction: column;
+  user-select: none;
 }
 
 .overlay .window .bar {
@@ -125,6 +177,12 @@ export default {
   border-top-left-radius: 5px;
 }
 
+.overlay .window .wrap {
+  height: calc(100% - 42px);
+  padding: 30px 30px 80px 30px;
+  border-top: 1px solid #bdbdd4;
+}
+
 .overlay .window .wrap-img {
   position: relative;
   display: flex;
@@ -132,10 +190,9 @@ export default {
   align-items: center;
   box-sizing: border-box;
   width: 100%;
-  height: calc(100% - 42px);
-  padding: 30px 30px 80px 30px;
-  border-top: 1px solid #bdbdd4;
+  height: 100%;
   z-index: 101;
+  overflow: hidden;
 }
 
 .overlay .window.loading .wrap-img {
@@ -143,11 +200,10 @@ export default {
 }
 
 .overlay .window .wrap-img .img {
-  position: absolute; 
-  left: 0; 
-  top: 0; 
+  position: absolute;
   max-width: 100%;
   max-height: 100%;
+  transition: transform 0.2s ease-out;
 }
 
 .overlay .window .loader {
@@ -182,5 +238,52 @@ export default {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.overlay .window .zoom-widget {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 16px;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, -50%);
+}
+
+.overlay .window .zoom-in,
+.overlay .window .zoom-out {
+  background-color: rgb(201, 199, 199);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 29px;
+  width: 29px;
+  overflow: hidden;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.16s ease-out;
+  border: 1px solid #ccc;
+  user-select: none; 
+}
+
+.overlay .window .zoom-in:hover,
+.overlay .window .zoom-out:hover {
+  background-color: #d6d4d4;
+}
+
+.overlay .window .zoom-in.disabled,
+.overlay .window .zoom-out.disabled {
+  opacity: .5;
+  pointer-events: none;
+  transition: all 0.3s ease-out;
+}
+
+.overlay .window .zoom-in .icon,
+.overlay .window .zoom-out .icon {
+  width: 65%;
+  height: 65%;
 }
 </style>
