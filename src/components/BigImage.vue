@@ -137,13 +137,13 @@ export default {
     zoom(step) {
       this.currentScale += step;
 
-      if (this.currentScale <= 1) {
+      if (this.currentScale + step < 1) {
         this.currentScale = 1;
         this.$refs.img.style.transform = 'scale(1)';
         return;
       }
 
-      if (this.currentScale >= this.maxScale) {
+      if (this.currentScale + step > this.maxScale) {
         this.currentScale = this.maxScale;
         this.$refs.img.style.transform = `scale(${this.maxScale})`;
         return;
