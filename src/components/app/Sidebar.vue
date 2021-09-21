@@ -112,12 +112,20 @@ export default {
   },
   beforeMount() {
     // Get data from server
-    this.axios.get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries?page=${this.page}&pageSize=${this.pageSize}`).then((response) => {
-      this.totalPagesCount = response.data.count;
-      this.$store.commit('setData', [...response.data.data]);
-      this.$store.commit('hideLoader');
-      console.log('Loaded page', this.page + 1, '/', this.numberOfPages);
-    });
+    this.axios
+      .get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries?page=${this.page}&pageSize=${this.pageSize}`)
+      .then((response) => {
+        this.totalPagesCount = response.data.count;
+        this.$store.commit('setData', [...response.data.data]);
+        console.log(`Loaded page ${this.page + 1}/${this.numberOfPages}`);
+      })
+      .catch((error) => {
+        this.$store.commit('showErrorMessage', 'Wystąpił błąd. Nie udało się pobrać dane.');
+        console.log(`Error: ${error}`);
+      })
+      .finally(() => {
+        this.$store.commit('hideLoader');
+      });
   },
   components: {
     InputBtn,
@@ -128,9 +136,16 @@ export default {
       this.totalPagesCount = null;
 
       this.axios
-        .get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries?page=${this.page}&pageSize=${this.pageSize}`).then((response) => {
+        .get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries?page=${this.page}&pageSize=${this.pageSize}`)
+        .then((response) => {
           this.totalPagesCount = response.data.count;
           this.$store.commit('setData', [...response.data.data]);
+        })
+        .catch((error) => {
+          this.$store.commit('showErrorMessage', 'Wystąpił błąd. Nie udało się pobrać dane.');
+          console.log(`Error: ${error}`);
+        })
+        .finally(() => {
           this.$store.commit('hideLoader');
         });
     },
@@ -159,19 +174,20 @@ export default {
       console.log(this.filterParams);
 
       this.axios
-        .get(newUrl).then((response) => {
-          this.$store.commit('hideLoader');
+        .get(newUrl)
+        .then((response) => {
           if (response.data.count === 0) {
-            this.$store.commit('showFilterMessage');
+            console.log('Nie znaleziono wyników dla Twojego wyszukiwania.');
+            this.$store.commit('showErrorMessage', 'Nie znaleziono wyników dla Twojego wyszukiwania.');
             return;
           }
         
-          this.$store.commit('hideFilterMessage');
+          this.$store.commit('hideErrorMessage');
 
           this.$store.commit('setFiltredData', [...response.data.data]);
         })
         .catch((error) => {
-          this.$store.commit('hideLoader');
+          this.$store.commit('showErrorMessage', 'Wystąpił błąd. Nie udało się pobrać dane.');
 
           if (error.response) {
             // Request made and server responded
@@ -185,9 +201,14 @@ export default {
             // Something happened in setting up the request that triggered an Error
             console.log('Error', error.message);
           }
+        })
+        .finally(() => {
+          this.$store.commit('hideLoader');
         });
     },
     loadMore() {
+      this.$store.commit('hideErrorMessage');
+
       if (this.$store.getters.getFiltredData === null) {
 
         if (this.page + 1 < this.numberOfPages && !this.$store.getters.loader) {
@@ -202,7 +223,7 @@ export default {
             })
             .catch((error) => {
               this.page -= 1;
-              this.$store.commit('hideLoader');
+              this.$store.commit('showErrorMessage', 'Wystąpił błąd. Nie udało się pobrać dane.');
 
               if (error.response) {
                 // Request made and server responded
@@ -216,6 +237,9 @@ export default {
                 // Something happened in setting up the request that triggered an Error
                 console.log('Error', error.message);
               }
+            })
+            .finally(() => {
+              this.$store.commit('hideLoader');
             });
         }
       }
@@ -244,7 +268,7 @@ export default {
     clearFilter() {
       this.$store.commit('clearFilter');
       this.$store.commit('clearFiltredData');
-      this.$store.commit('hideFilterMessage');
+      this.$store.commit('hideErrorMessage');
 
       this.filterParams.filter = '';
       this.filterParams.from = '';

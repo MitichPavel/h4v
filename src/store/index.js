@@ -15,7 +15,7 @@ export default createStore({
     },
 
     loader: false,
-    filterMessage: false,
+    errorMessage: false,
   },
   mutations: {
     setBigImgId: (state, id) => state.bigImage.id = id,
@@ -38,8 +38,8 @@ export default createStore({
     hideLoader: (state) => state.loader = false,
     showLoader: (state) => state.loader = true,
 
-    hideFilterMessage: (state) => state.filterMessage = false,
-    showFilterMessage: (state) => state.filterMessage = true,
+    hideErrorMessage: (state) => state.errorMessage = '',
+    showErrorMessage: (state, message) => state.errorMessage = message,
   },
   getters: {
     getBigImgId: (state) => state.bigImage.id,
@@ -53,6 +53,6 @@ export default createStore({
     visibilityBigImage: (state) => state.bigImage.visibility,
 
     loader: (state) => state.loader,
-    filterMessage: (state) => state.filterMessage,
+    errorMessage: (state) => state.errorMessage,
   },
 });

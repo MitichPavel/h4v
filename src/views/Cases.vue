@@ -28,10 +28,7 @@
       </ul>
     </div>
 
-    <div
-      class="content"
-      :class="{ loading : loader, message : message }"
-    >
+    <div class="content">
       <ul
         v-if="caseList || message"
         class="case-list"
@@ -76,6 +73,18 @@
           </Button>
         </li>
       </ul>
+      <div class="info">
+        <div
+          v-if="message"
+          class="message"
+        >
+          {{ message }}
+        </div>
+        <div
+          class="loading"
+          v-if="loader"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -105,7 +114,7 @@ export default {
       return this.$store.getters.loader;
     },
     message() {
-      return this.$store.getters.filterMessage;
+      return this.$store.getters.errorMessage;
     },
   },
   methods: {
@@ -163,45 +172,44 @@ export default {
   list-style-type: none;
 }
 
-.cases .content .case-list {
+.cases .content .info {
   position: relative;
-  list-style-type: none;
-  margin-bottom: 50px;
+  height: 100px;
+  width: 100%;
+  z-index: 1;
 }
 
-.cases .content .case-list:after {
+.cases .content .info .loading {
   position: absolute;
-  bottom: -35px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   display: block;
-  content: '';
   width: 100px;
   height: 20px;
-}
-
-.cases .content.loading .case-list:after {
   background-image: url(./../assets/images/svg/loader_dots.svg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100%;
+  z-index: 2;
 }
 
-.cases .content .case-list:before {
+.cases .content .info .message {
   position: absolute;
-  bottom: 0;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, 300%);
-  display: none;
-  content: 'Nie znaleziono wyników dla Twojego wyszukiwania.';
+  transform: translate(-50%, -50%);
+  display: block;
   font-size: 24px;
   font-weight: 700;
   line-height: 1;
   color: #5e6267;
+  background-color: #fff;
+  z-index: 3;
 }
 
-.cases .content.message .case-list:before {
-  display: block;
+.cases .content .case-list {
+  list-style-type: none;
 }
 
 .cases .content .case-list .case-item {
