@@ -1,8 +1,5 @@
 <template>
-  <div
-    :class="{ loading : !caseList }"
-    class="cases"
-  >
+  <div class="cases">
     <div class="wrap-page-title">
       <h2 class="page-title">
         Lista zdjęć RTG DIACOM
@@ -31,8 +28,14 @@
       </ul>
     </div>
 
-    <div class="content">
-      <ul class="case-list">
+    <div
+      class="content"
+      :class="{ loading : loader, message : message }"
+    >
+      <ul
+        v-if="caseList || message"
+        class="case-list"
+      >
         <li
           v-for="(item, i) in caseList"
           :key="i"
@@ -40,7 +43,7 @@
         >
           <div
             class="wrap-img"
-            @click="saveId(item.id)"
+            @click="showBigImg(item.id)"
           >
             <SmallImage
               :imageId="item.id"
@@ -73,8 +76,6 @@
           </Button>
         </li>
       </ul>
-
-      <img src="@/assets/images/svg/loader.svg" class="loader">
     </div>
   </div>
 </template>
@@ -88,13 +89,27 @@ export default {
     Button,
     SmallImage,
   },
+  data() {
+    return {
+      getMore: false,
+    }
+  },
+  beforeMount() {
+    this.$store.commit('showLoader');
+  },
   computed: {
     caseList() {
       return this.$store.getters.getFiltredData || this.$store.getters.getData;
     },
+    loader() {
+      return this.$store.getters.loader;
+    },
+    message() {
+      return this.$store.getters.filterMessage;
+    },
   },
   methods: {
-    saveId(id) {
+    showBigImg(id) {
       this.$store.commit('showBigImage');
       this.$store.commit('setBigImgId', id);
     },
@@ -104,7 +119,6 @@ export default {
 
 <style>
 .cases {
-  position: relative;
   box-sizing: border-box;
   padding: 0 20px;
   margin: 0;
@@ -149,24 +163,45 @@ export default {
   list-style-type: none;
 }
 
-.cases .content .loader {
-  box-sizing: border-box;
-  display: none;
-  width: 80px;
-  height: 80px;
-  position: absolute;
-  top: 240px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-}
-
-.cases.loading .content .loader {
-  display: block;
-}
-
 .cases .content .case-list {
+  position: relative;
   list-style-type: none;
+  margin-bottom: 50px;
+}
+
+.cases .content .case-list:after {
+  position: absolute;
+  bottom: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+  content: '';
+  width: 100px;
+  height: 20px;
+}
+
+.cases .content.loading .case-list:after {
+  background-image: url(./../assets/images/svg/loader_dots.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+}
+
+.cases .content .case-list:before {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 300%);
+  display: none;
+  content: 'Nie znaleziono wyników dla Twojego wyszukiwania.';
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  color: #5e6267;
+}
+
+.cases .content.message .case-list:before {
+  display: block;
 }
 
 .cases .content .case-list .case-item {

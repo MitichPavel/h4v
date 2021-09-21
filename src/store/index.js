@@ -2,24 +2,26 @@ import { createStore } from 'vuex';
 
 export default createStore({
   state: {
-    data: null,
+    data: [],
     filtredData: null,
     bigImage: {
       visibility: false,
       id: null,
     },
     filterParams: {
-      filter: null,
-      from: null,
-      to: null,
+      filter: '',
+      from: '',
+      to: '',
     },
-    filterPath: null,
+
+    loader: false,
+    filterMessage: false,
   },
   mutations: {
     setBigImgId: (state, id) => state.bigImage.id = id,
 
-    setData: (state, serverData) => state.data = serverData,
-    clearData: (state) => state.data = null,
+    setData: (state, serverData) => state.data = [...state.data, ...serverData],
+    clearData: (state) => state.data = [],
 
     setFiltredData: (state, filtredData) => state.filtredData = filtredData,
     clearFiltredData: (state) => state.filtredData = null,
@@ -27,13 +29,17 @@ export default createStore({
     showBigImage: (state) => state.bigImage.visibility = true,
     hideBigImage: (state) => state.bigImage.visibility = false,
 
-    setFilterPath: (state, path) => state.filterPath = path,
     clearFilter: (state) => {
-      state.filterParams.filter = null;
-      state.filterParams.from = null;
-      state.filterParams.to = null;
-      state.filterPath = null;
+      state.filterParams.filter = '';
+      state.filterParams.from = '';
+      state.filterParams.to = '';
     },
+
+    hideLoader: (state) => state.loader = false,
+    showLoader: (state) => state.loader = true,
+
+    hideFilterMessage: (state) => state.filterMessage = false,
+    showFilterMessage: (state) => state.filterMessage = true,
   },
   getters: {
     getBigImgId: (state) => state.bigImage.id,
@@ -46,6 +52,7 @@ export default createStore({
 
     visibilityBigImage: (state) => state.bigImage.visibility,
 
-    getfilterPath: (state) => state.filterPath,
+    loader: (state) => state.loader,
+    filterMessage: (state) => state.filterMessage,
   },
 });

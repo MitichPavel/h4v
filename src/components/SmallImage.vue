@@ -20,10 +20,12 @@ export default {
   },
   methods: {
     getSmallImg() {
-      this.axios.get('https://ddicomdemo20210806204758.azurewebsites.net/Entries/thumbnail/' + this.imageId)
+      this.axios
+        .get('https://ddicomdemo20210806204758.azurewebsites.net/Entries/thumbnail/' + this.imageId)
         .then((response) => {
-          this.$refs.img.setAttribute('src', response.config.url);
-
+          if (this.$refs.img) {
+            this.$refs.img.setAttribute('src', response.config.url);
+          }
         });
     },
   }

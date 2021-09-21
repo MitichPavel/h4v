@@ -93,7 +93,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.pageScroll(false);
-      this.getBigImg();
+
       const initScale = setInterval(() => {
         if (this.renderedImg.height) {
           clearInterval(initScale);
@@ -105,6 +105,14 @@ export default {
         }
       }, 200);
     });
+  },
+  beforeCreate() {
+    // Get big image
+    const id = this.$store.getters.getBigImgId;
+    this.axios.get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries/photo/${id}`)
+      .then((response) => {
+        this.$refs.img.setAttribute('src', response.config.url);
+      });
   },
   methods: {
     getOffset(e) {
@@ -162,13 +170,6 @@ export default {
       this.$refs.img.style.transform = `scale(${this.currentScale + step})`;
     },
 
-    getBigImg() {
-      const id = this.$store.getters.getBigImgId;
-      this.axios.get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries/photo/${id}`)
-        .then((response) => {
-          this.$refs.img.setAttribute('src', response.config.url);
-        });
-    },
     closeBigImage() {
       this.pageScroll(true);
       this.$store.commit('hideBigImage');

@@ -47,7 +47,7 @@ export default {
     return {
       links: [
         {title: 'Help4vet', url: '/', exact: true,},
-        {title: 'zdjęcia RTG', url: '/cases',},
+        {title: 'Zdjęcia RTG', url: '/cases',},
       ],
     };
   },

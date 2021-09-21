@@ -1,6 +1,9 @@
 <template>
   <div>
-    1
+    <h1>Home page.</h1>
+    <div class="baner">
+      Miejsce na reklamę.
+    </div>
   </div>
 </template>
 
