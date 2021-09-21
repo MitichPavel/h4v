@@ -56,7 +56,7 @@
         <InputBtn
           type="submit"
           btnClass="filter"
-          @click.prevent="getFiltredDataFromServer(url)"
+          @click.prevent="getFiltredDataFromServer"
         >
           Filtruj
         </InputBtn>
@@ -77,12 +77,15 @@ import InputBtn from '@/components/InputBtn.vue';
 export default {
   data() {
     return {
+      totalPagesCount: null,
+      page: 0,
+      pageSize: 20,
       filterParams: {
         filter: '',
         from: '',
         to: '',
       },
-      url: 'https://ddicomdemo20210806204758.azurewebsites.net/Entries',
+      url: `https://ddicomdemo20210806204758.azurewebsites.net/Entries?page=${this.page}&pageSize=${this.pageSize}`,
       dateStart: {
         max: '',
       },
@@ -92,33 +95,154 @@ export default {
       },
     };
   },
+  computed: {
+    numberOfPages() {
+      return Math.floor((this.totalPagesCount + this.pageSize - 1) / this.pageSize);
+    },
+    loader() {
+      return this.$store.getters.loader;
+    },
+  },
   mounted() {
     this.$nextTick(() => {
       this.setDefMaxDate();
 
-      this.getDataFromServer(this.url);
+      this.scrollWatcher();
     });
+  },
+  beforeMount() {
+    // Get data from server
+    this.axios
+      .get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries?page=${this.page}&pageSize=${this.pageSize}`)
+      .then((response) => {
+        this.totalPagesCount = response.data.count;
+        this.$store.commit('setData', [...response.data.data]);
+        console.log(`Loaded page ${this.page + 1}/${this.numberOfPages}`);
+      })
+      .catch((error) => {
+        this.$store.commit('showErrorMessage', 'Wystąpił błąd. Nie udało się pobrać dane.');
+        console.log(`Error: ${error}`);
+      })
+      .finally(() => {
+        this.$store.commit('hideLoader');
+      });
   },
   components: {
     InputBtn,
   },
   methods: {
-    getDataFromServer(url) {
-      this.axios.get(url).then((response) => {
-        console.log(response.data.count);
-        this.$store.commit('setData', [...response.data.data]);
+    getDataFromServer() {
+      this.page = 0;
+      this.totalPagesCount = null;
+
+      this.axios
+        .get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries?page=${this.page}&pageSize=${this.pageSize}`)
+        .then((response) => {
+          this.totalPagesCount = response.data.count;
+          this.$store.commit('setData', [...response.data.data]);
+        })
+        .catch((error) => {
+          this.$store.commit('showErrorMessage', 'Wystąpił błąd. Nie udało się pobrać dane.');
+          console.log(`Error: ${error}`);
+        })
+        .finally(() => {
+          this.$store.commit('hideLoader');
+        });
+    },
+    scrollWatcher() {
+      console.log('Scroll watcher added');
+      window.addEventListener('scroll', () => {
+        let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+      
+        if (bottomOfWindow) {
+          this.loadMore();
+        }
       });
     },
-    getFiltredDataFromServer(url) {
+    getFiltredDataFromServer() {
+      this.page = 0;
+      this.totalPagesCount = null;
+
+      this.$store.commit('clearFiltredData');
+      this.$store.commit('clearData');
+      this.$store.commit('showLoader');
+
       const path = this.createRequestPath();
       if (path === '') return;
-      const newUrl = url + path;
+      const newUrl = 'https://ddicomdemo20210806204758.azurewebsites.net/Entries' + path;
       console.log(newUrl);
       console.log(this.filterParams);
 
-      this.axios.get(newUrl).then((response) => {
-        this.$store.commit('setFiltredData', [...response.data.data]);
-      });
+      this.axios
+        .get(newUrl)
+        .then((response) => {
+          if (response.data.count === 0) {
+            console.log('Nie znaleziono wyników dla Twojego wyszukiwania.');
+            this.$store.commit('showErrorMessage', 'Nie znaleziono wyników dla Twojego wyszukiwania.');
+            return;
+          }
+        
+          this.$store.commit('hideErrorMessage');
+
+          this.$store.commit('setFiltredData', [...response.data.data]);
+        })
+        .catch((error) => {
+          this.$store.commit('showErrorMessage', 'Wystąpił błąd. Nie udało się pobrać dane.');
+
+          if (error.response) {
+            // Request made and server responded
+            console.log(error.response.data);
+            console.log(`Response whith error ${error.response.status}`);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            // The request was made but no response was received
+            console.log(error.request);
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            console.log('Error', error.message);
+          }
+        })
+        .finally(() => {
+          this.$store.commit('hideLoader');
+        });
+    },
+    loadMore() {
+      this.$store.commit('hideErrorMessage');
+
+      if (this.$store.getters.getFiltredData === null) {
+
+        if (this.page + 1 < this.numberOfPages && !this.$store.getters.loader) {
+          this.$store.commit('showLoader');
+          this.page += 1;
+
+          this.axios
+            .get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries?page=${this.page}&pageSize=${this.pageSize}`).then((response) => {
+              this.$store.commit('setData', [...response.data.data]);
+              this.$store.commit('hideLoader');
+              console.log('Loaded page', this.page + 1, '/', this.numberOfPages);
+            })
+            .catch((error) => {
+              this.page -= 1;
+              this.$store.commit('showErrorMessage', 'Wystąpił błąd. Nie udało się pobrać dane.');
+
+              if (error.response) {
+                // Request made and server responded
+                console.log(error.response.data);
+                console.log(`Response whith error ${error.response.status}`);
+                console.log(error.response.headers);
+              } else if (error.request) {
+                // The request was made but no response was received
+                console.log(error.request);
+              } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+              }
+            })
+            .finally(() => {
+              this.$store.commit('hideLoader');
+            });
+        }
+      }
     },
     createRequestPath() {
       const params = {...this.filterParams};
@@ -144,10 +268,15 @@ export default {
     clearFilter() {
       this.$store.commit('clearFilter');
       this.$store.commit('clearFiltredData');
+      this.$store.commit('hideErrorMessage');
+
+      this.filterParams.filter = '';
+      this.filterParams.from = '';
+      this.filterParams.to = '';
 
       this.clearInputs();
 
-      this.getDataFromServer(this.url);
+      this.getDataFromServer();
     },
     setStart() {
       this.dateEnd.min = this.$refs.dateStart.value;

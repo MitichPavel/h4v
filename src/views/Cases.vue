@@ -1,8 +1,5 @@
 <template>
-  <div
-    :class="{ loading : !caseList }"
-    class="cases"
-  >
+  <div class="cases">
     <div class="wrap-page-title">
       <h2 class="page-title">
         Lista zdjęć RTG DIACOM
@@ -32,7 +29,10 @@
     </div>
 
     <div class="content">
-      <ul class="case-list">
+      <ul
+        v-if="caseList || message"
+        class="case-list"
+      >
         <li
           v-for="(item, i) in caseList"
           :key="i"
@@ -40,7 +40,7 @@
         >
           <div
             class="wrap-img"
-            @click="saveId(item.id)"
+            @click="showBigImg(item.id)"
           >
             <SmallImage
               :imageId="item.id"
@@ -73,8 +73,18 @@
           </Button>
         </li>
       </ul>
-
-      <img src="@/assets/images/svg/loader.svg" class="loader">
+      <div class="info">
+        <div
+          v-if="message"
+          class="message"
+        >
+          {{ message }}
+        </div>
+        <div
+          class="loading"
+          v-if="loader"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -88,13 +98,27 @@ export default {
     Button,
     SmallImage,
   },
+  data() {
+    return {
+      getMore: false,
+    }
+  },
+  beforeMount() {
+    this.$store.commit('showLoader');
+  },
   computed: {
     caseList() {
       return this.$store.getters.getFiltredData || this.$store.getters.getData;
     },
+    loader() {
+      return this.$store.getters.loader;
+    },
+    message() {
+      return this.$store.getters.errorMessage;
+    },
   },
   methods: {
-    saveId(id) {
+    showBigImg(id) {
       this.$store.commit('showBigImage');
       this.$store.commit('setBigImgId', id);
     },
@@ -104,7 +128,6 @@ export default {
 
 <style>
 .cases {
-  position: relative;
   box-sizing: border-box;
   padding: 0 20px;
   margin: 0;
@@ -149,20 +172,40 @@ export default {
   list-style-type: none;
 }
 
-.cases .content .loader {
-  box-sizing: border-box;
-  display: none;
-  width: 80px;
-  height: 80px;
-  position: absolute;
-  top: 240px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
+.cases .content .info {
+  position: relative;
+  height: 100px;
+  width: 100%;
+  z-index: 1;
 }
 
-.cases.loading .content .loader {
+.cases .content .info .loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: block;
+  width: 100px;
+  height: 20px;
+  background-image: url(./../assets/images/svg/loader_dots.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  z-index: 2;
+}
+
+.cases .content .info .message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  color: #5e6267;
+  background-color: #fff;
+  z-index: 3;
 }
 
 .cases .content .case-list {

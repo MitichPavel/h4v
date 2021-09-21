@@ -16,21 +16,30 @@
         ref="wrap"
         class="wrap"
       >
-        <div class="wrap-img">
+        <div
+          class="wrap-img"
+          @mouseleave="() => { if (isDown && isMove) moveOff(); }"
+        >
           <img
             ref="img"
             class="img"
             draggable="false"
+            :class="{ move : isMove && isDown, zoomed : currentScale > 1 }"
+            @mousedown="getOffset"
+            @mousemove="moveOn"
+            @mouseup="moveOff"
           >
         </div>
       </div>
-      <div class="zoom-widget">
+      <div
+        class="zoom-widget"
+        :class="{ disabled : !widget }"  
+      >
         <div
           class="zoom-out"
           :class="{ disabled : currentScale === 1 }"
           @click="() => {
-            if (currentScale === 1) return;
-            zoom(-stepScale);
+            if (currentScale > 1) zoom(-stepScale);
           }"  
         >
           <img 
@@ -44,8 +53,7 @@
           class="zoom-in"
           :class="{ disabled : currentScale === maxScale }"
           @click="() => {
-            if (currentScale === maxScale) return;
-            zoom(stepScale);
+            if (currentScale < maxScale) zoom(stepScale);
           }"
         >
           <img
@@ -66,18 +74,18 @@ export default {
   data() {
     return {
       loading: true,
+      widget: false,
+
+      isDown: false,
+      isMove: false,
+      offset: [0, 0],
+
       maxScale: null,
       stepScale: null,
       currentScale: 1,
     };
   },
   computed: {
-    computedWidth() {
-      return parseInt(getComputedStyle(this.$refs.img).width, 10);
-    },
-    naturalWidth() {
-      return this.$refs.img.naturalWidth;
-    },
     renderedImg() {
       return document.querySelector('.img');
     },
@@ -85,32 +93,75 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.pageScroll(false);
-      this.getBigImg();
+
       const initScale = setInterval(() => {
         if (this.renderedImg.height) {
           clearInterval(initScale);
           this.loading = false;
+          this.widget = true;
 
-          this.maxScale = this.scale();
+          this.maxScale = this.scale() * 5;
           this.stepScale = this.maxScale / 10;
         }
       }, 200);
     });
   },
+  beforeCreate() {
+    // Get big image
+    const id = this.$store.getters.getBigImgId;
+    this.axios.get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries/photo/${id}`)
+      .then((response) => {
+        this.$refs.img.setAttribute('src', response.config.url);
+      });
+  },
   methods: {
+    getOffset(e) {
+      if (this.currentScale > 1) {
+        this.isDown = true;
+
+        this.offset[0] = this.$refs.img.offsetLeft - e.clientX;
+        this.offset[1] = this.$refs.img.offsetTop - e.clientY;
+      }
+    },
+    moveOn(e) {
+      if (this.currentScale > 1) {
+        this.isMove = true;
+
+        if (this.isDown) {
+
+          this.$refs.img.style.top = (e.clientY + this.offset[1]) + 'px';
+          this.$refs.img.style.left = (e.clientX + this.offset[0]) + 'px';
+        }
+      }
+    },
+    moveOff() {
+      this.isMove = false;
+      this.isDown = false;
+    },
+    resetPosition() {
+      this.$refs.img.style.top = 'auto';
+      this.$refs.img.style.left = 'auto';
+    },
+
     scale() {
       return this.renderedImg.height / parseInt(getComputedStyle(this.$refs.wrap).height, 10) - 1;
     },
     zoom(step) {
       this.currentScale += step;
 
-      if (this.currentScale <= 1) {
+      if (step < 0) {
+        this.resetPosition();
+      }
+
+      if (this.currentScale + step < 1) {
+        this.resetPosition();
+
         this.currentScale = 1;
         this.$refs.img.style.transform = 'scale(1)';
         return;
       }
 
-      if (this.currentScale >= this.maxScale) {
+      if (this.currentScale + step > this.maxScale) {
         this.currentScale = this.maxScale;
         this.$refs.img.style.transform = `scale(${this.maxScale})`;
         return;
@@ -118,17 +169,12 @@ export default {
 
       this.$refs.img.style.transform = `scale(${this.currentScale + step})`;
     },
-    getBigImg() {
-      const id = this.$store.getters.getBigImgId;
-      this.axios.get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries/photo/${id}`)
-        .then((response) => {
-          this.$refs.img.setAttribute('src', response.config.url);
-        });
-    },
+
     closeBigImage() {
       this.pageScroll(true);
       this.$store.commit('hideBigImage');
     },
+
     pageScroll(scroll = false) {
       if (!scroll) {
         document.body.style.overflow = 'hidden';
@@ -179,8 +225,10 @@ export default {
 
 .overlay .window .wrap {
   height: calc(100% - 42px);
-  padding: 30px 30px 80px 30px;
-  border-top: 1px solid #bdbdd4;
+  border-width: 30px;
+  border-bottom-width: 60px;
+  border-color: #1E2832;
+  border-style: solid;
 }
 
 .overlay .window .wrap-img {
@@ -204,6 +252,18 @@ export default {
   max-width: 100%;
   max-height: 100%;
   transition: transform 0.2s ease-out;
+}
+
+.overlay .window .wrap-img .img.move.zoomed {
+  transition: transform 0s;
+}
+
+.overlay .window .wrap-img .img.move.zoomed:hover {
+  cursor: grabbing;
+}
+
+.overlay .window .wrap-img .img.zoomed:hover {
+  cursor: grab;
 }
 
 .overlay .window .loader {
@@ -252,6 +312,16 @@ export default {
   transform: translate(-50%, -50%);
 }
 
+.overlay .window .zoom-widget.disabled {
+  opacity: 0;
+  transform: opacity .3s ease-out;
+}
+
+.overlay .window .zoom-widget.disabled .zoom-in,
+.overlay .window .zoom-widget.disabled .zoom-out {
+  pointer-events: none;
+}
+
 .overlay .window .zoom-in,
 .overlay .window .zoom-out {
   background-color: rgb(201, 199, 199);
@@ -259,9 +329,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 29px;
-  width: 29px;
-  overflow: hidden;
+  height: 32px;
+  width: 32px;
   cursor: pointer;
   box-sizing: border-box;
   transition: background-color 0.16s ease-out;
