@@ -134,6 +134,7 @@ export default {
     getDataFromServer() {
       this.page = 0;
       this.totalPagesCount = null;
+      this.$store.commit('showLoader');
 
       this.axios
         .get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries?page=${this.page}&pageSize=${this.pageSize}`)
@@ -268,6 +269,7 @@ export default {
     clearFilter() {
       this.$store.commit('clearFilter');
       this.$store.commit('clearFiltredData');
+      this.$store.commit('clearData');
       this.$store.commit('hideErrorMessage');
 
       this.filterParams.filter = '';

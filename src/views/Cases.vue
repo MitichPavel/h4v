@@ -42,9 +42,10 @@
             class="wrap-img"
             @click="showBigImg(item.id)"
           >
-            <SmallImage
-              :imageId="item.id"
-            />
+            <img
+              class="img"
+              :src="`data:image/jpeg;base64,${item.thumbnail}`"
+            >
           </div>
           <div class="id">
             {{ item.studyId }}
@@ -91,12 +92,10 @@
 
 <script>
 import Button from '@/components/Button.vue';
-import SmallImage from '@/components/SmallImage.vue';
 
 export default {
   components: {
     Button,
-    SmallImage,
   },
   data() {
     return {
@@ -185,7 +184,7 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   display: block;
-  width: 100px;
+  width: 120px;
   height: 20px;
   background-image: url(./../assets/images/svg/loader_dots.svg);
   background-repeat: no-repeat;
@@ -257,6 +256,14 @@ export default {
   .cases .content .case-list .case-item .wrap-img {
     min-height: calc((100vw - 470px) / 8);
   }
+}
+
+.cases .content .case-list .case-item .wrap-img .img {
+  display: block;
+  line-height: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
 }
 </style>>
 <style>
