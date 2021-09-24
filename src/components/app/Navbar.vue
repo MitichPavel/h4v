@@ -104,6 +104,8 @@ export default {
   box-sizing: border-box;
   width: 100%;
   padding: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 500;
   color: #fff;
   text-decoration: none;
 }
@@ -146,6 +148,8 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  font-size: 18px;
+  font-weight: 500;
   color: #fff;
   text-decoration: none;
 }

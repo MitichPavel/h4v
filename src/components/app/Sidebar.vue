@@ -329,12 +329,18 @@ export default {
   align-items: center;
 }
 
+.filter .wrap-inputs .input-text::placeholder {
+  color: #898989;
+}
+
 .filter-input {
   width: 100%;
   min-height: 39px;
   padding: 0 5px 0 8px;
   margin: 0;
   border: 1px solid #000;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .group-date {
@@ -358,7 +364,20 @@ export default {
 .group-date .wrap-input span.label {
   padding: 4px 0;
   font-size: 14px;
+  font-weight: 500;
   color: #000;
+}
+
+.group-date .wrap-input input[type="date"]::-webkit-datetime-edit-text,
+.group-date .wrap-input input[type="date"]::-webkit-datetime-edit-month-field,
+.group-date .wrap-input input[type="date"]::-webkit-datetime-edit-day-field,
+.group-date .wrap-input input[type="date"]::-webkit-datetime-edit-year-field {
+  color: #898989;
+}
+
+.sidebar .wrap-sidebar-title .sidebar-title {
+  font-size: 24px;
+  font-weight: 300;
 }
 
 .sidebar .footer {

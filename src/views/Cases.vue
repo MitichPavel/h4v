@@ -153,6 +153,8 @@ export default {
 }
 
 .page-title {
+  font-size: 24px;
+  font-weight: 300;
   text-align: left;
 }
 
@@ -166,6 +168,11 @@ export default {
   grid-template-columns: repeat(8, 1fr);
   grid-gap: 10px;
   list-style-type: none;
+}
+
+.header-list .header-item {
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .cases .content .info {
@@ -197,7 +204,7 @@ export default {
   transform: translate(-50%, -50%);
   display: block;
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1;
   color: #5e6267;
   background-color: #fff;
@@ -217,13 +224,8 @@ export default {
   height: 100%;
   padding: 5px;
   border-top: 2px solid #DFE2E6;
-  font-size: 18px;
-}
-
-@media only screen and (max-width:1280px) {
-  .cases .content .case-list .case-item {
-    font-size: 15px;
-  }
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .cases .content .case-list .case-item:nth-child(2n) {

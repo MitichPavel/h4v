@@ -33,6 +33,20 @@ export default {
   padding: 6px 10px;
   margin: 0;
   border: 1px solid #000;
+  font-size: 18px;
+  font-weight: 500;
   cursor: pointer;
+}
+
+@media only screen and (max-width: 1600px) {
+  .btn {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (max-width: 1366px) {
+  .btn {
+    font-size: 13px;
+  }
 }
 </style>
