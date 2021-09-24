@@ -161,6 +161,8 @@ export default {
       });
     },
     getFiltredDataFromServer() {
+      if (this.filterParams.filter === '' && this.filterParams.from === '' && this.filterParams.to === '') return;
+
       this.page = 0;
       this.totalPagesCount = null;
 
@@ -267,6 +269,8 @@ export default {
       return path;
     },
     clearFilter() {
+      if (this.$store.getters.getFiltredData === null && this.$store.getters.errorMessage === '') return;
+
       this.$store.commit('clearFilter');
       this.$store.commit('clearFiltredData');
       this.$store.commit('clearData');
@@ -306,7 +310,6 @@ export default {
 
 <style scoped>
 .sidebar {
-  box-sizing: border-box;
   width: 100%;
   height: 100%;
   padding: 16px 18px;
@@ -318,7 +321,6 @@ export default {
 }
 
 .filter {
-  box-sizing: border-box;
   padding: 0;
   margin: 12px 0 0 0;
   display: flex;
@@ -328,7 +330,6 @@ export default {
 }
 
 .filter-input {
-  box-sizing: border-box;
   width: 100%;
   min-height: 39px;
   padding: 0 5px 0 8px;
@@ -337,7 +338,6 @@ export default {
 }
 
 .group-date {
-  box-sizing: border-box;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 12px;
@@ -356,14 +356,12 @@ export default {
 }
 
 .group-date .wrap-input span.label {
-  box-sizing: border-box;
   padding: 4px 0;
   font-size: 14px;
   color: #000;
 }
 
 .sidebar .footer {
-  box-sizing: border-box;
   width: max-content;
   display: grid;
   grid-template-columns: 1fr 1fr;

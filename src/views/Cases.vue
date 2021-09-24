@@ -125,9 +125,8 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .cases {
-  box-sizing: border-box;
   padding: 0 20px;
   margin: 0;
 }
@@ -140,7 +139,6 @@ export default {
 
 .wrap-page-title {
   position: relative;
-  box-sizing: border-box;
   padding: 16px 10px;
 }
 
@@ -163,7 +161,6 @@ export default {
 }
 
 .header-list {
-  box-sizing: border-box;
   padding: 0 5px;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -217,7 +214,6 @@ export default {
   grid-template-rows: max-content;
   grid-gap: 10px;
   align-items: center;
-  box-sizing: border-box;
   height: 100%;
   padding: 5px;
   border-top: 2px solid #DFE2E6;
@@ -235,7 +231,6 @@ export default {
 }
 
 .cases .content .case-list .case-item .wrap-img {
-  box-sizing: border-box;
   width: 100%;
   height: 100%;
   min-height: 122.3px;
@@ -261,11 +256,10 @@ export default {
 .cases .content .case-list .case-item .wrap-img .img {
   display: block;
   line-height: 0;
-  box-sizing: border-box;
   width: 100%;
   height: auto;
 }
-</style>>
+</style>
 <style>
 .btn-open {
   background-color: #000;

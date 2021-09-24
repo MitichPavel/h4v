@@ -21,16 +21,14 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .wrap-btn {
-  box-sizing: border-box;
   max-width: 170px;
   padding: 0;
   margin: 0;
 }
 
 .btn {
-  box-sizing: border-box;
   width: 100%;
   padding: 6px 10px;
   margin: 0;

@@ -15,7 +15,7 @@ export default createStore({
     },
 
     loader: false,
-    errorMessage: false,
+    errorMessage: '',
   },
   mutations: {
     setBigImgId: (state, id) => state.bigImage.id = id,

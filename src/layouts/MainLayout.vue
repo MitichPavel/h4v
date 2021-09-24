@@ -36,7 +36,6 @@ export default {
 
 <style scoped>
 .app-content {
-  box-sizing: border-box;
   max-width: 1980px;
   padding: 0;
   margin: 0 auto;

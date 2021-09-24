@@ -2,7 +2,6 @@
   <nav class="navbar">
     <div class="wrap-navbar">
       <ul class="menu">
-
         <router-link
           v-for="link in links"
           :to="link.url"
@@ -20,26 +19,6 @@
           </li>
         </router-link>
       </ul>
-      <div
-        v-if="!isLogin"
-        class="user-menu"
-      >
-        <router-link
-          to="/login"
-          custom
-          v-slot="{ href, isActive }"
-          >
-          <div
-            class="item"
-            :class="{ active : isActive }"
-          >
-            <a :href="href" class="link">
-              <img src="@/assets/images/svg/user.svg" class="user-icon" alt="user icon">
-              <div class="login">Login</div>
-            </a>
-          </div>
-        </router-link>
-      </div>
     </div>
   </nav>
 </template>
@@ -49,10 +28,8 @@ export default {
   data() {
     return {
       links: [
-        {title: 'Help4vet', url: '/', exact: true,},
-        {title: 'Zdjęcia RTG', url: '/cases',},
+        {title: 'Help4vet', url: '/',},
       ],
-      isLogin: true,
     };
   },
 };
@@ -120,39 +97,5 @@ export default {
   width: 100%;
   height: 7px;
   background-color: #FFDC1E;
-}
-
-/* User menu */
-.user-menu {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  box-sizing: border-box;
-  width: 75px;
-  padding: 0;
-  margin: 0 20px 0 0;
-  cursor: pointer;
-}
-
-.user-menu .item {
-  display: block;
-  box-sizing: border-box;
-  width: 70px;
-  padding: 0;
-  margin: 0;
-}
-
-.user-menu .item .link {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  color: #fff;
-  text-decoration: none;
-}
-
-.user-menu .item .link .user-icon {
-  box-sizing: border-box;
-  width: 21px;
-  height: 21px;
 }
 </style>

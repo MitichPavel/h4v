@@ -35,9 +35,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .input-like-btn {
-  box-sizing: border-box;
   max-width: 170px;
   padding: 0;
   margin: 0;
@@ -45,7 +44,6 @@ export default {
 
 .input-like-btn  .wrap {
   display: block;
-  box-sizing: border-box;
   width: 100%;
   padding: 6px 20px;
   margin: 0;

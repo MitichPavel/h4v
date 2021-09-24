@@ -203,7 +203,6 @@ export default {
 
 .overlay .window {
   position: relative;
-  box-sizing: border-box;
   width: 100%;
   height: 100%;
   background-color: #1E2832;
@@ -214,7 +213,6 @@ export default {
 }
 
 .overlay .window .bar {
-  box-sizing: border-box;
   width: 100%;
   height: 42px;
   padding: 10px;
@@ -236,7 +234,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  box-sizing: border-box;
   width: 100%;
   height: 100%;
   z-index: 101;
@@ -267,7 +264,6 @@ export default {
 }
 
 .overlay .window .loader {
-  box-sizing: border-box;
   display: none;
   width: 50px;
   height: 50px;
@@ -283,7 +279,6 @@ export default {
 }
 
 .overlay .window .bar .wrap-close {
-  box-sizing: border-box;
   display: block;
   width: 24px;
   height: 24px;
@@ -294,7 +289,6 @@ export default {
 }
 
 .overlay .window .bar .wrap-close .close {
-  box-sizing: border-box;
   display: block;
   width: 100%;
   height: 100%;
@@ -332,7 +326,6 @@ export default {
   height: 32px;
   width: 32px;
   cursor: pointer;
-  box-sizing: border-box;
   transition: background-color 0.16s ease-out;
   border: 1px solid #ccc;
   user-select: none; 

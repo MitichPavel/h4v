@@ -1,6 +1,9 @@
 <template>
   <div class="home-layout">
-    <Navbar />
+    <Navbar
+      :cases="'/cases'"
+      :login="'/login'"
+    />
 
     <main class="app-content">
       <div class="app-page">
@@ -21,7 +24,6 @@ export default {
 
 <style scoped>
 .app-content {
-  box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
