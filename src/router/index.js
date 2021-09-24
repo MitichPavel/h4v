@@ -17,14 +17,14 @@ const routes = [
     component: () => import('./../views/Cases.vue'),
     /* jshint ignore:end */
   },
-  {
-    path: '/login',
-    name: 'login',
-    meta: {layout: 'login'},
-    /* jshint ignore:start */
-    component: () => import('./../views/Login.vue'),
-    /* jshint ignore:end */
-  },
+  // {
+  //   path: '/login',
+  //   name: 'login',
+  //   meta: {layout: 'login'},
+  //   /* jshint ignore:start */
+  //   component: () => import('./../views/Login.vue'),
+  //   /* jshint ignore:end */
+  // },
 ];
 
 const router = createRouter({
