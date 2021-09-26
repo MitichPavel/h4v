@@ -117,7 +117,6 @@ export default {
       .then((response) => {
         this.totalPagesCount = response.data.count;
         this.$store.commit('setData', [...response.data.data]);
-        console.log(`Loaded page ${this.page + 1}/${this.numberOfPages}`);
       })
       .catch((error) => {
         this.$store.commit('showErrorMessage', 'Wystąpił błąd. Nie udało się pobrać dane.');
@@ -151,7 +150,6 @@ export default {
         });
     },
     scrollWatcher() {
-      console.log('Scroll watcher added');
       window.addEventListener('scroll', () => {
         let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
       
@@ -173,14 +171,11 @@ export default {
       const path = this.createRequestPath();
       if (path === '') return;
       const newUrl = 'https://ddicomdemo20210806204758.azurewebsites.net/Entries' + path;
-      console.log(newUrl);
-      console.log(this.filterParams);
 
       this.axios
         .get(newUrl)
         .then((response) => {
           if (response.data.count === 0) {
-            console.log('Nie znaleziono wyników dla Twojego wyszukiwania.');
             this.$store.commit('showErrorMessage', 'Nie znaleziono wyników dla Twojego wyszukiwania.');
             return;
           }
@@ -222,7 +217,6 @@ export default {
             .get(`https://ddicomdemo20210806204758.azurewebsites.net/Entries?page=${this.page}&pageSize=${this.pageSize}`).then((response) => {
               this.$store.commit('setData', [...response.data.data]);
               this.$store.commit('hideLoader');
-              console.log('Loaded page', this.page + 1, '/', this.numberOfPages);
             })
             .catch((error) => {
               this.page -= 1;
