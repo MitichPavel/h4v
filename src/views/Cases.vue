@@ -64,6 +64,7 @@
           </div>
           <Button
             btnClass="btn-open"
+            @click="open(item.filePath)"
           >
             Otwórz
           </Button>
@@ -120,6 +121,16 @@ export default {
     showBigImg(id) {
       this.$store.commit('showBigImage');
       this.$store.commit('setBigImgId', id);
+    },
+    open(filePath) {
+      this.axios
+        .get(`h4v://${filePath.replaceAll(/\\/g, '/').replaceAll(/\s/g, '%20')}`)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 }
