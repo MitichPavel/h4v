@@ -62,12 +62,13 @@
           <div class="species">
             {{ item.patientSpeciesDescription }}
           </div>
-          <Button
-            btnClass="btn-open"
-            @click="open(item.filePath)"
+          <a
+            :href="`h4v://${filePath.replaceAll(/\\/g, '/').replaceAll(/\s/g, '%20')}`"
           >
-            Otwórz
-          </Button>
+            <Button btnClass="btn-open">
+              Otwórz
+            </Button>
+          </a>
           <Button
             btnClass="btn-send"
           >
@@ -121,16 +122,6 @@ export default {
     showBigImg(id) {
       this.$store.commit('showBigImage');
       this.$store.commit('setBigImgId', id);
-    },
-    open(filePath) {
-      this.axios
-        .get(`h4v://${filePath.replaceAll(/\\/g, '/').replaceAll(/\s/g, '%20')}`)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     },
   },
 }
