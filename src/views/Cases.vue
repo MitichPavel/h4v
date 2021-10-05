@@ -63,7 +63,7 @@
             {{ item.patientSpeciesDescription }}
           </div>
           <a
-            :href="`h4v://${filePath.replaceAll(/\\/g, '/').replaceAll(/\s/g, '%20')}`"
+            :href="`h4v://${item.filePath.replaceAll(/\\/g, '/').replaceAll(/\s/g, '%20')}`"
           >
             <Button btnClass="btn-open">
               Otwórz
