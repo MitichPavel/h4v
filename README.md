@@ -1,5 +1,7 @@
 # h4v
+H4V it's a simple frontend web application dashboard for manage data of vet clinic clients.
 
+Project preview [h4v](https://mitichpavel.github.io/h4v)
 ## Project setup
 ```
 npm install
