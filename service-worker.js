@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "https://mitichpavel.github.io/h4v/precache-manifest.31a0727ab5f5fdd5ba86e33a6c9ec0d7.js"
+  "/h4v/precache-manifest.aaa25713edc621c144965d6cf71d1a21.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "h4v"});
