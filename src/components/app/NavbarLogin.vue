@@ -7,13 +7,13 @@
           :to="link.url"
           :key="link.url"
           custom
-          v-slot="{ href, isActive }"
+          v-slot="{ href, isActive, navigate }"
           >
           <li
             class="menu-item"
             :class="{ active : isActive }"
           >
-            <a :href="href" class="menu-link">
+            <a :href="href" class="menu-link" @click="navigate">
               {{link.title}}
             </a>
           </li>
