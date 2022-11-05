@@ -15,7 +15,8 @@ import NavbarLogin from '@/components/app/NavbarLogin.vue';
 export default {
   components: {
     NavbarLogin,
-  }
+  },
+  name: 'login',
 }
 </script>
 

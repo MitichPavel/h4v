@@ -1,8 +1,8 @@
 <template>
   <div class="home-layout">
     <Navbar
-      :cases="'/cases'"
-      :login="'/login'"
+      cases="/cases"
+      login="/login"
     />
 
     <main class="app-content">
